@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String           @id @default(cuid())
+  name           String
+  handle         String           @unique
+  email          String           @unique
+  passwordHash   String?
+  favoriteColor  CardColor?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  decks          Deck[]
+  userCards      UserCard[]
+  posts          CommunityPost[]
+  comments       Comment[]
+}
+
+model Card {
+  id          String     @id @default(cuid())
+  code        String     @unique
+  name        String
+  type        CardType
+  color       CardColor[]
+  rarity      CardRarity
+  cost        Int?
+  collection  String
+  createdAt   DateTime   @default(now())
+  deckCards   DeckCard[]
+  userCards   UserCard[]
+}
+
+model UserCard {
+  id        String       @id @default(cuid())
+  userId    String
+  cardId    String
+  quantity  Int          @default(0)
+  status    CardStatus[]
+  notes     String?
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card      Card         @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  updatedAt DateTime     @updatedAt
+
+  @@unique([userId, cardId])
+}
+
+model Deck {
+  id          String     @id @default(cuid())
+  name        String
+  leader      String
+  colors      CardColor[]
+  format      DeckFormat @default(Casual)
+  isPublic    Boolean    @default(true)
+  ownerId     String
+  owner       User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  cards       DeckCard[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model DeckCard {
+  id        String @id @default(cuid())
+  deckId    String
+  cardId    String
+  quantity  Int
+  deck      Deck   @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  card      Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([deckId, cardId])
+}
+
+model CommunityPost {
+  id        String    @id @default(cuid())
+  authorId  String
+  topic     String
+  body      String
+  tag       PostTag
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments  Comment[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Comment {
+  id        String        @id @default(cuid())
+  postId    String
+  authorId  String
+  body      String
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author    User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now())
+}
+
+enum CardColor {
+  Red
+  Green
+  Blue
+  Purple
+  Black
+  Yellow
+}
+
+enum CardStatus {
+  owned
+  wanted
+  forTrade
+}
+
+enum CardType {
+  Leader
+  Character
+  Event
+  Stage
+}
+
+enum CardRarity {
+  C
+  UC
+  R
+  SR
+  SEC
+  L
+  P
+}
+
+enum DeckFormat {
+  Casual
+  Local
+  Tournament
+}
+
+enum PostTag {
+  Deck
+  Card
+  Trade
+  Strategy
+}
