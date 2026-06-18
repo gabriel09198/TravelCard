@@ -4,12 +4,12 @@ import { Badge } from "@/components/ui/badge";
 import type { OnePieceCard } from "@/types/onePieceCard";
 
 const colorClassByName: Record<string, string> = {
-  Red: "border-red-200 bg-red-50 text-red-900",
-  Green: "border-emerald-200 bg-emerald-50 text-emerald-900",
-  Blue: "border-sky-200 bg-sky-50 text-sky-900",
-  Purple: "border-violet-200 bg-violet-50 text-violet-900",
-  Black: "border-zinc-300 bg-zinc-100 text-zinc-900",
-  Yellow: "border-yellow-200 bg-yellow-50 text-yellow-900"
+  Red: "border-red-500/30 bg-red-500/15 text-red-200",
+  Green: "border-emerald-500/30 bg-emerald-500/15 text-emerald-200",
+  Blue: "border-sky-500/30 bg-sky-500/15 text-sky-200",
+  Purple: "border-violet-500/30 bg-violet-500/15 text-violet-200",
+  Black: "border-zinc-500/30 bg-zinc-500/20 text-zinc-200",
+  Yellow: "border-yellow-500/30 bg-yellow-500/15 text-yellow-200"
 };
 
 export function OnePieceCardItem({ card }: { card: OnePieceCard }) {

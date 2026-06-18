@@ -51,7 +51,7 @@ export function LoginForm() {
         minLength={6}
         required
       />
-      {error ? <p className="rounded-md bg-red-50 p-3 text-sm text-red-800">{error}</p> : null}
+      {error ? <p className="rounded-md bg-red-500/15 p-3 text-sm text-red-200">{error}</p> : null}
       <Button className="w-full" disabled={loading}>
         <LogIn className="h-4 w-4" />
         {loading ? "Entrando..." : "Entrar"}

@@ -50,12 +50,12 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="rounded-md border bg-card p-5 shadow-xl">
+        <div className="rounded-md border bg-card/80 p-5 shadow-2xl shadow-black/30 backdrop-blur">
           <div className="grid gap-3">
             {["Cartas", "Decks", "Trocas", "Chat"].map((type, index) => (
               <div
                 key={type}
-                className="flex items-center justify-between rounded-md border bg-background p-4 shadow-sm"
+                className="flex items-center justify-between rounded-md border bg-background/65 p-4 shadow-sm"
               >
                 <div>
                   <p className="text-sm font-semibold">{type}</p>

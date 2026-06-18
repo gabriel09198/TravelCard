@@ -7,17 +7,17 @@ const statusMap: Record<CardStatus, { label: string; icon: typeof Check; classNa
   owned: {
     label: "Tenho",
     icon: Check,
-    className: "border-emerald-200 bg-emerald-50 text-emerald-800"
+    className: "border-emerald-500/30 bg-emerald-500/15 text-emerald-200"
   },
   wanted: {
     label: "Quero comprar",
     icon: ShoppingBag,
-    className: "border-amber-200 bg-amber-50 text-amber-800"
+    className: "border-amber-500/30 bg-amber-500/15 text-amber-200"
   },
   forTrade: {
     label: "Quero trocar",
     icon: ArrowLeftRight,
-    className: "border-sky-200 bg-sky-50 text-sky-800"
+    className: "border-sky-500/30 bg-sky-500/15 text-sky-200"
   }
 };
 

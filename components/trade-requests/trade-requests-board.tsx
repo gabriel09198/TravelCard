@@ -68,7 +68,7 @@ export function TradeRequestsBoard() {
 
   return (
     <div className="grid gap-5 lg:grid-cols-[380px_1fr]">
-      <Card className="h-fit border-2">
+      <Card className="h-fit border-2 border-border/80">
         <CardHeader>
           <CardTitle>Nova solicitacao</CardTitle>
           <p className="text-sm text-muted-foreground">
@@ -109,7 +109,7 @@ export function TradeRequestsBoard() {
             <textarea
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              className="min-h-28 w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="min-h-28 w-full rounded-md border bg-background/70 px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
               placeholder="Descricao"
               required
             />
@@ -129,7 +129,7 @@ export function TradeRequestsBoard() {
                 placeholder="Carta desejada em troca"
               />
             )}
-            {error ? <p className="rounded-md bg-red-50 p-3 text-sm text-red-800">{error}</p> : null}
+            {error ? <p className="rounded-md bg-red-500/15 p-3 text-sm text-red-200">{error}</p> : null}
             <Button className="w-full" disabled={loading}>
               {loading ? "Salvando..." : "Publicar solicitacao"}
             </Button>
@@ -157,8 +157,8 @@ export function TradeRequestsBoard() {
                       <Badge
                         className={
                           request.type === "venda"
-                            ? "border-amber-200 bg-amber-50 text-amber-900"
-                            : "border-sky-200 bg-sky-50 text-sky-900"
+                            ? "border-amber-500/30 bg-amber-500/15 text-amber-200"
+                            : "border-sky-500/30 bg-sky-500/15 text-sky-200"
                         }
                       >
                         {request.type === "venda" ? "Venda" : "Troca"}

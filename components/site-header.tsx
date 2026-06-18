@@ -23,7 +23,7 @@ export function SiteHeader() {
   const userName = profile?.name ?? user?.displayName ?? user?.email;
 
   return (
-    <header className="sticky top-0 z-30 border-b bg-background/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-30 border-b bg-background/82 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2 font-semibold">
           <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-sm">
@@ -83,7 +83,7 @@ export function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
-              className="whitespace-nowrap rounded-md bg-secondary px-3 py-2 text-sm font-medium"
+              className="whitespace-nowrap rounded-md bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground"
             >
               {item.label}
             </Link>
@@ -92,14 +92,14 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={() => void logoutUser()}
-              className="whitespace-nowrap rounded-md bg-secondary px-3 py-2 text-sm font-medium"
+              className="whitespace-nowrap rounded-md bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground"
             >
               Sair
             </button>
           ) : (
             <Link
               href="/login"
-              className="whitespace-nowrap rounded-md bg-secondary px-3 py-2 text-sm font-medium"
+              className="whitespace-nowrap rounded-md bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground"
             >
               Entrar
             </Link>

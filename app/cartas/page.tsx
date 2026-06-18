@@ -66,7 +66,7 @@ export default async function CardsPage({ searchParams }: CardsPageProps) {
         <Suspense>
           <OnePieceCardSearch />
         </Suspense>
-        <div className="rounded-md border border-red-200 bg-red-50 p-6 text-red-900">
+        <div className="rounded-md border border-red-500/30 bg-red-500/15 p-6 text-red-200">
           A OPTCG API nao respondeu como esperado. Tente novamente em alguns instantes.
         </div>
       </div>

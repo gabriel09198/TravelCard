@@ -82,9 +82,9 @@ export function RegisterForm() {
         minLength={6}
         required
       />
-      {error ? <p className="rounded-md bg-red-50 p-3 text-sm text-red-800">{error}</p> : null}
+      {error ? <p className="rounded-md bg-red-500/15 p-3 text-sm text-red-200">{error}</p> : null}
       {warning ? (
-        <p className="rounded-md bg-amber-50 p-3 text-sm text-amber-900">{warning}</p>
+        <p className="rounded-md bg-amber-500/15 p-3 text-sm text-amber-200">{warning}</p>
       ) : null}
       <Button className="w-full" disabled={loading}>
         <UserPlus className="h-4 w-4" />
