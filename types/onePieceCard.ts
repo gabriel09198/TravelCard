@@ -44,12 +44,21 @@ export interface UserCardCollection {
   userId: string;
   cardId: string;
   cardNumber: string;
+  name?: string;
+  imageUrl?: string;
   quantity: number;
   status: OnePieceCardStatus;
+  type?: string;
+  color?: string;
+  rarity?: string;
+  notes?: string;
 }
 
 export interface UserDeckCard {
+  cardId?: string;
   cardNumber: string;
+  name?: string;
+  imageUrl?: string;
   quantity: number;
 }
 
@@ -57,7 +66,31 @@ export interface UserDeck {
   id: string;
   userId: string;
   name: string;
+  description?: string;
   cards: UserDeckCard[];
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface UserOwnedCard {
+  id: string;
+  name: string;
+  code: string;
+  imageUrl?: string;
+  quantity: number;
+  type?: string;
+  color?: string;
+  rarity?: string;
+  notes?: string;
+}
+
+export interface UserWishlistCard {
+  id: string;
+  name: string;
+  code: string;
+  imageUrl?: string;
+  desiredQuantity: number;
+  notes?: string;
 }
 
 export type TradeRequestType = "troca" | "venda";

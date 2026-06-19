@@ -40,11 +40,14 @@ export async function saveUserProfile(
   const profile = buildUserProfile(user, name, handle);
 
   await setDoc(
-    doc(firestore, "users", user.uid),
+    doc(firestore, "usuarios", user.uid),
     {
       ...profile,
+      nome: profile.name,
       updatedAt: serverTimestamp(),
-      createdAt: serverTimestamp()
+      createdAt: serverTimestamp(),
+      atualizadoEm: serverTimestamp(),
+      criadoEm: serverTimestamp()
     },
     { merge: true }
   );
@@ -96,13 +99,20 @@ export async function sendPasswordReset(email: string): Promise<void> {
 
 export async function getUserProfile(userId: string): Promise<AppUserProfile | null> {
   try {
-    const snapshot = await getDoc(doc(firestore, "users", userId));
+    const snapshot = await getDoc(doc(firestore, "usuarios", userId));
 
     if (!snapshot.exists()) {
       return null;
     }
 
-    return snapshot.data() as AppUserProfile;
+    const data = snapshot.data();
+
+    return {
+      id: userId,
+      name: data.name ?? data.nome ?? "Usuario",
+      email: data.email ?? "",
+      handle: data.handle ?? ""
+    };
   } catch (error) {
     console.warn("Nao foi possivel carregar perfil do Firestore.", error);
     return null;
