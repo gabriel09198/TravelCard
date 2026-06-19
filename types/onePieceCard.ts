@@ -60,6 +60,7 @@ export interface UserDeckCard {
   name?: string;
   imageUrl?: string;
   quantity: number;
+  price?: number | null;
 }
 
 export interface UserDeck {
@@ -67,6 +68,8 @@ export interface UserDeck {
   userId: string;
   name: string;
   description?: string;
+  format?: string;
+  colors?: string[];
   cards: UserDeckCard[];
   createdAt?: Date;
   updatedAt?: Date;

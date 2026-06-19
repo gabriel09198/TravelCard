@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   onSnapshot,
@@ -140,12 +141,15 @@ export async function createUserDeck(uid: string, deck: Omit<UserDeck, "id" | "u
   const documentRef = await addDoc(userSubcollection(uid, "decks"), {
     nome: deck.name,
     descricao: deck.description ?? "",
+    formato: deck.format ?? "",
+    cores: deck.colors ?? [],
     cartas: deck.cards.map((card) => ({
       cardId: card.cardId ?? card.cardNumber,
       nome: card.name ?? "",
       codigo: card.cardNumber,
       imagem: card.imageUrl ?? "",
-      quantidade: card.quantity
+      quantidade: card.quantity,
+      preco: card.price ?? null
     })),
     criadoEm: serverTimestamp(),
     atualizadoEm: serverTimestamp()
@@ -160,17 +164,24 @@ export async function saveUserDeck(uid: string, deck: UserDeck): Promise<void> {
     {
       nome: deck.name,
       descricao: deck.description ?? "",
+      formato: deck.format ?? "",
+      cores: deck.colors ?? [],
       cartas: deck.cards.map((card) => ({
         cardId: card.cardId ?? card.cardNumber,
         nome: card.name ?? "",
         codigo: card.cardNumber,
         imagem: card.imageUrl ?? "",
-        quantidade: card.quantity
+        quantidade: card.quantity,
+        preco: card.price ?? null
       })),
       atualizadoEm: serverTimestamp()
     },
     { merge: true }
   );
+}
+
+export async function deleteUserDeck(uid: string, deckId: string): Promise<void> {
+  await deleteDoc(doc(userSubcollection(uid, "decks"), deckId));
 }
 
 export function subscribeUserDecks(
@@ -198,15 +209,19 @@ export function subscribeUserDecks(
                     codigo?: string;
                     imagem?: string;
                     quantidade?: number;
+                    preco?: number | null;
                   }) => ({
                     cardId: card.cardId ?? card.codigo ?? "",
                     name: card.nome ?? "Carta sem nome",
                     cardNumber: card.codigo ?? card.cardId ?? "",
                     imageUrl: card.imagem || undefined,
-                    quantity: card.quantidade ?? 1
+                    quantity: card.quantidade ?? 1,
+                    price: card.preco ?? null
                   })
                 )
               : [],
+            format: data.formato ?? "",
+            colors: Array.isArray(data.cores) ? data.cores : [],
             createdAt: nullableDate(data.criadoEm),
             updatedAt: nullableDate(data.atualizadoEm)
           };
@@ -272,15 +287,19 @@ export async function getUserDecks(userId: string): Promise<UserDeck[]> {
               codigo?: string;
               imagem?: string;
               quantidade?: number;
+              preco?: number | null;
             }) => ({
               cardId: card.cardId ?? card.codigo ?? "",
               name: card.nome ?? "Carta sem nome",
               cardNumber: card.codigo ?? card.cardId ?? "",
               imageUrl: card.imagem || undefined,
-              quantity: card.quantidade ?? 1
+              quantity: card.quantidade ?? 1,
+              price: card.preco ?? null
             })
           )
-        : []
+        : [],
+      format: data.formato ?? "",
+      colors: Array.isArray(data.cores) ? data.cores : []
     };
   });
 }
