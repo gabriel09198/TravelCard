@@ -137,8 +137,8 @@ export function DeckCard({ deck }: { deck: Deck }) {
           </Button>
         </div>
 
-        <div className="-mx-1 overflow-x-auto px-1 pb-2">
-          <div className="flex min-w-full gap-4">
+        <div className="max-h-[46rem] overflow-y-auto pr-1">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(128px,1fr))] justify-items-center gap-x-4 gap-y-5 sm:grid-cols-[repeat(auto-fill,minmax(142px,1fr))]">
             {deckCards.map((card) => {
               if (!card) return null;
               const style = colorStyles[card.colors[0]];
@@ -146,9 +146,14 @@ export function DeckCard({ deck }: { deck: Deck }) {
               return (
                 <div
                   key={`${deck.id}-${card.id}`}
-                  className="w-[132px] shrink-0 overflow-hidden rounded-md border border-zinc-800 bg-zinc-950/80 shadow-lg shadow-black/20 sm:w-[148px]"
+                  className="w-full max-w-[158px] min-w-0 text-center"
                 >
-                  <div className={cn("relative aspect-[5/7] overflow-hidden border-b-2", style.frame)}>
+                  <div
+                    className={cn(
+                      "relative aspect-[5/7] overflow-hidden rounded-md border-2 shadow-lg shadow-black/25",
+                      style.frame
+                    )}
+                  >
                     <div className={cn("absolute inset-0 bg-gradient-to-br", style.art)} />
                     <div className="absolute inset-1 rounded bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.85),transparent_24%),radial-gradient(circle_at_70%_38%,rgba(0,0,0,0.22),transparent_28%)]" />
                     {card.imageUrl ? (
@@ -156,7 +161,7 @@ export function DeckCard({ deck }: { deck: Deck }) {
                         src={card.imageUrl}
                         alt={card.name}
                         fill
-                        sizes="(min-width: 640px) 148px, 132px"
+                        sizes="(min-width: 640px) 158px, 44vw"
                         className="object-cover"
                       />
                     ) : null}
@@ -168,24 +173,17 @@ export function DeckCard({ deck }: { deck: Deck }) {
                         {card.power}
                       </div>
                     ) : null}
-                    <div className="absolute inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 bg-black/82 px-2 py-1.5 text-[11px] font-bold">
-                      <span>${(card.price ?? 0).toFixed(2)}</span>
-                      <span className="truncate pl-1">{card.code}</span>
+                    <div className="absolute inset-x-0 bottom-0 z-10 space-y-0.5 bg-black/82 px-2 py-1.5 text-left">
+                      <div className="flex items-center justify-between gap-2 text-[11px] font-bold">
+                        <span>${(card.price ?? 0).toFixed(2)}</span>
+                        <span className="truncate">{card.code}</span>
+                      </div>
+                      <p className="truncate text-[11px] font-black text-zinc-100">{card.name}</p>
                     </div>
                   </div>
-                  <div className="space-y-2 p-2.5 text-left">
-                    <p className="line-clamp-2 min-h-8 text-xs font-black leading-4 text-zinc-100">
-                      {card.name}
-                    </p>
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="truncate text-[11px] text-zinc-400">
-                      {card.type} - {card.rarity}
-                      </p>
-                      <span className="shrink-0 rounded bg-primary px-2 py-1 text-xs font-black text-white shadow-sm">
-                        {card.deckQuantity}x
-                      </span>
-                    </div>
-                  </div>
+                  <p className="mt-2 text-center text-base font-black leading-none text-zinc-100">
+                    {card.deckQuantity}x
+                  </p>
                 </div>
               );
             })}
