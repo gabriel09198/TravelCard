@@ -1,5 +1,6 @@
 import {
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
@@ -85,6 +86,12 @@ export async function loginUser(email: string, password: string): Promise<User> 
 
 export async function logoutUser(): Promise<void> {
   await signOut(firebaseAuth);
+}
+
+export async function sendPasswordReset(email: string): Promise<void> {
+  await sendPasswordResetEmail(firebaseAuth, email, {
+    url: `${window.location.origin}/login`
+  });
 }
 
 export async function getUserProfile(userId: string): Promise<AppUserProfile | null> {

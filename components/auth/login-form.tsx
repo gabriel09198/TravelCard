@@ -52,6 +52,11 @@ export function LoginForm() {
         required
       />
       {error ? <p className="rounded-md bg-red-500/15 p-3 text-sm text-red-200">{error}</p> : null}
+      <div className="text-right">
+        <Link href="/recuperar-senha" className="text-sm font-medium text-primary">
+          Esqueci minha senha
+        </Link>
+      </div>
       <Button className="w-full" disabled={loading}>
         <LogIn className="h-4 w-4" />
         {loading ? "Entrando..." : "Entrar"}

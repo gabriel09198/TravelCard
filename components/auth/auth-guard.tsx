@@ -6,7 +6,7 @@ import { Anchor } from "lucide-react";
 
 import { useAuth } from "@/components/auth/auth-provider";
 
-const PUBLIC_ROUTES = new Set(["/", "/login", "/cadastro"]);
+const PUBLIC_ROUTES = new Set(["/", "/login", "/cadastro", "/recuperar-senha"]);
 
 export function AuthGuard({ children }: { children: ReactNode }) {
   const pathname = usePathname();
