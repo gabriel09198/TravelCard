@@ -137,8 +137,8 @@ export function DeckCard({ deck }: { deck: Deck }) {
           </Button>
         </div>
 
-        <div className="max-h-[38rem] overflow-y-auto pr-1">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        <div className="-mx-1 overflow-x-auto px-1 pb-2">
+          <div className="flex min-w-full gap-4">
             {deckCards.map((card) => {
               if (!card) return null;
               const style = colorStyles[card.colors[0]];
@@ -146,7 +146,7 @@ export function DeckCard({ deck }: { deck: Deck }) {
               return (
                 <div
                   key={`${deck.id}-${card.id}`}
-                  className="min-w-0 overflow-hidden rounded-md border border-zinc-800 bg-zinc-950/70"
+                  className="w-[132px] shrink-0 overflow-hidden rounded-md border border-zinc-800 bg-zinc-950/80 shadow-lg shadow-black/20 sm:w-[148px]"
                 >
                   <div className={cn("relative aspect-[5/7] overflow-hidden border-b-2", style.frame)}>
                     <div className={cn("absolute inset-0 bg-gradient-to-br", style.art)} />
@@ -156,33 +156,35 @@ export function DeckCard({ deck }: { deck: Deck }) {
                         src={card.imageUrl}
                         alt={card.name}
                         fill
-                        sizes="(min-width: 1280px) 150px, (min-width: 768px) 20vw, 45vw"
+                        sizes="(min-width: 640px) 148px, 132px"
                         className="object-cover"
                       />
                     ) : null}
-                    <div className="absolute left-1 top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-white text-xs font-black text-zinc-950">
+                    <div className="absolute left-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white text-xs font-black text-zinc-950 shadow">
                       {card.cost ?? "L"}
                     </div>
                     {card.power ? (
-                      <div className="absolute right-1 top-1 z-10 rounded bg-white/90 px-1 text-[10px] font-black text-zinc-950">
+                      <div className="absolute right-2 top-2 z-10 rounded bg-white/90 px-1.5 py-0.5 text-[10px] font-black text-zinc-950 shadow">
                         {card.power}
                       </div>
                     ) : null}
-                    <div className="absolute inset-x-0 bottom-0 z-10 flex items-center justify-between bg-black/80 px-1.5 py-1 text-[10px] font-bold">
+                    <div className="absolute inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 bg-black/82 px-2 py-1.5 text-[11px] font-bold">
                       <span>${(card.price ?? 0).toFixed(2)}</span>
                       <span className="truncate pl-1">{card.code}</span>
                     </div>
                   </div>
-                  <div className="space-y-1 p-2 text-left">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="truncate text-xs font-black text-zinc-100">{card.name}</p>
-                      <span className="shrink-0 rounded bg-primary px-1.5 py-0.5 text-[10px] font-black text-white">
+                  <div className="space-y-2 p-2.5 text-left">
+                    <p className="line-clamp-2 min-h-8 text-xs font-black leading-4 text-zinc-100">
+                      {card.name}
+                    </p>
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="truncate text-[11px] text-zinc-400">
+                      {card.type} - {card.rarity}
+                      </p>
+                      <span className="shrink-0 rounded bg-primary px-2 py-1 text-xs font-black text-white shadow-sm">
                         {card.deckQuantity}x
                       </span>
                     </div>
-                    <p className="truncate text-[11px] text-zinc-400">
-                      {card.type} - {card.rarity}
-                    </p>
                   </div>
                 </div>
               );
