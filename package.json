@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "firebase:deploy:rules": "npx firebase-tools@14.16.0 deploy --only firestore:rules"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

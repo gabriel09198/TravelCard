@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Layers, Minus, Pencil, Plus, Search, Trash2, X } from "lucide-react";
+import { FirebaseError } from "firebase/app";
 
 import { useAuth } from "@/components/auth/auth-provider";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +19,14 @@ import {
 import type { OnePieceCard, UserDeck, UserDeckCard } from "@/types/onePieceCard";
 
 const DECK_COLORS = ["Red", "Green", "Blue", "Purple", "Black", "Yellow"] as const;
+
+function getDeckFirestoreErrorMessage(error: unknown): string {
+  if (error instanceof FirebaseError && error.code === "permission-denied") {
+    return "O Firestore bloqueou o salvamento. Publique as regras em firestore.rules no Firebase Console.";
+  }
+
+  return "Nao foi possivel salvar o deck.";
+}
 
 function PersonalDeckCard({
   deck,
@@ -242,7 +251,7 @@ function DeckFormModal({
       onClose();
     } catch (saveError) {
       console.error("Erro ao salvar deck em usuarios/{uid}/decks:", saveError);
-      setError("Nao foi possivel salvar o deck.");
+      setError(getDeckFirestoreErrorMessage(saveError));
     } finally {
       setSaving(false);
     }
@@ -408,8 +417,13 @@ export function PersonalDecks() {
         setDecks(items);
         setLoading(false);
       },
-      () => {
-        setError("Nao foi possivel carregar seus decks.");
+      (loadError) => {
+        console.error("Erro ao carregar decks em usuarios/{uid}/decks:", loadError);
+        setError(
+          loadError instanceof FirebaseError && loadError.code === "permission-denied"
+            ? "O Firestore bloqueou a leitura dos decks. Publique as regras em firestore.rules no Firebase Console."
+            : "Nao foi possivel carregar seus decks."
+        );
         setLoading(false);
       }
     );

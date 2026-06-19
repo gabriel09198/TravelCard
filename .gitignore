@@ -13,6 +13,7 @@ yarn-error.log*
 pnpm-debug.log*
 *.log
 *.tsbuildinfo
+.npm-cache/
 
 .DS_Store
 Thumbs.db
