@@ -141,7 +141,6 @@ export async function createUserDeck(uid: string, deck: Omit<UserDeck, "id" | "u
   const documentRef = await addDoc(userSubcollection(uid, "decks"), {
     nome: deck.name,
     descricao: deck.description ?? "",
-    formato: deck.format ?? "",
     cores: deck.colors ?? [],
     cartas: deck.cards.map((card) => ({
       cardId: card.cardId ?? card.cardNumber,
@@ -164,7 +163,6 @@ export async function saveUserDeck(uid: string, deck: UserDeck): Promise<void> {
     {
       nome: deck.name,
       descricao: deck.description ?? "",
-      formato: deck.format ?? "",
       cores: deck.colors ?? [],
       cartas: deck.cards.map((card) => ({
         cardId: card.cardId ?? card.cardNumber,
@@ -220,7 +218,6 @@ export function subscribeUserDecks(
                   })
                 )
               : [],
-            format: data.formato ?? "",
             colors: Array.isArray(data.cores) ? data.cores : [],
             createdAt: nullableDate(data.criadoEm),
             updatedAt: nullableDate(data.atualizadoEm)
@@ -298,7 +295,6 @@ export async function getUserDecks(userId: string): Promise<UserDeck[]> {
             })
           )
         : [],
-      format: data.formato ?? "",
       colors: Array.isArray(data.cores) ? data.cores : []
     };
   });

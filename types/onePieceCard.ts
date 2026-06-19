@@ -68,7 +68,6 @@ export interface UserDeck {
   userId: string;
   name: string;
   description?: string;
-  format?: string;
   colors?: string[];
   cards: UserDeckCard[];
   createdAt?: Date;

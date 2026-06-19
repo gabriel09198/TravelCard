@@ -8,6 +8,7 @@ import { useAuth } from "@/components/auth/auth-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { firebaseAuth } from "@/lib/firebase";
 import {
   createUserDeck,
   deleteUserDeck,
@@ -15,6 +16,8 @@ import {
   subscribeUserDecks
 } from "@/services/firebaseUserDataService";
 import type { OnePieceCard, UserDeck, UserDeckCard } from "@/types/onePieceCard";
+
+const DECK_COLORS = ["Red", "Green", "Blue", "Purple", "Black", "Yellow"] as const;
 
 function PersonalDeckCard({
   deck,
@@ -35,7 +38,6 @@ function PersonalDeckCard({
               <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{deck.description}</p>
             ) : null}
             <div className="mt-2 flex flex-wrap gap-2">
-              {deck.format ? <Badge>{deck.format}</Badge> : null}
               {deck.colors?.map((color) => <Badge key={color}>{color}</Badge>)}
             </div>
           </div>
@@ -104,8 +106,7 @@ function DeckFormModal({
   const { user } = useAuth();
   const [name, setName] = useState(deck?.name ?? "");
   const [description, setDescription] = useState(deck?.description ?? "");
-  const [format, setFormat] = useState(deck?.format ?? "");
-  const [colors, setColors] = useState((deck?.colors ?? []).join(", "));
+  const [colors, setColors] = useState<string[]>(deck?.colors ?? []);
   const [selectedCards, setSelectedCards] = useState<UserDeckCard[]>(deck?.cards ?? []);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<OnePieceCard[]>([]);
@@ -133,7 +134,8 @@ function DeckFormModal({
 
       const data = (await response.json()) as OnePieceCard[];
       setResults(data);
-    } catch {
+    } catch (searchError) {
+      console.error("Erro ao buscar cartas para o deck:", searchError);
       setError("Nao foi possivel buscar cartas agora.");
     } finally {
       setSearching(false);
@@ -178,13 +180,40 @@ function DeckFormModal({
     setSelectedCards((current) => current.filter((card) => card.cardNumber !== cardNumber));
   }
 
+  function toggleColor(color: string) {
+    setColors((current) =>
+      current.includes(color) ? current.filter((item) => item !== color) : [...current, color]
+    );
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!user) return;
+    const uid = firebaseAuth.currentUser?.uid ?? user?.uid;
+    const trimmedName = name.trim();
+
+    if (!uid) {
+      setError("Voce precisa estar logado para salvar um deck.");
+      return;
+    }
+
+    if (!trimmedName) {
+      setError("Informe um nome para o deck.");
+      return;
+    }
+
+    if (colors.length === 0) {
+      setError("Selecione pelo menos uma cor para o deck.");
+      return;
+    }
 
     if (selectedCards.length === 0) {
       setError("Adicione pelo menos uma carta ao deck.");
+      return;
+    }
+
+    if (selectedCards.some((card) => card.quantity <= 0)) {
+      setError("Todas as cartas precisam ter quantidade maior que zero.");
       return;
     }
 
@@ -192,30 +221,27 @@ function DeckFormModal({
     setError("");
 
     const payload = {
-      name,
-      description,
-      format,
-      colors: colors
-        .split(",")
-        .map((color) => color.trim())
-        .filter(Boolean),
+      name: trimmedName,
+      description: description.trim(),
+      colors,
       cards: selectedCards
     };
 
     try {
       if (deck) {
-        await saveUserDeck(user.uid, {
+        await saveUserDeck(uid, {
           ...payload,
           id: deck.id,
-          userId: user.uid
+          userId: uid
         });
       } else {
-        await createUserDeck(user.uid, payload);
+        await createUserDeck(uid, payload);
       }
 
       onSaved();
       onClose();
-    } catch {
+    } catch (saveError) {
+      console.error("Erro ao salvar deck em usuarios/{uid}/decks:", saveError);
       setError("Nao foi possivel salvar o deck.");
     } finally {
       setSaving(false);
@@ -223,8 +249,8 @@ function DeckFormModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 p-4 backdrop-blur-sm">
-      <div className="mx-auto max-w-6xl overflow-hidden rounded-md border bg-card shadow-2xl shadow-black/40">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 p-3 backdrop-blur-sm sm:p-4">
+      <div className="mx-auto flex max-h-[94vh] w-full max-w-7xl flex-col overflow-hidden rounded-md border bg-card shadow-2xl shadow-black/40">
         <div className="flex items-start justify-between gap-4 border-b p-4">
           <div>
             <h2 className="text-2xl font-black">{deck ? "Editar deck" : "Criar deck"}</h2>
@@ -237,7 +263,7 @@ function DeckFormModal({
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit} className="grid gap-4 p-4 lg:grid-cols-[360px_1fr]">
+        <form onSubmit={handleSubmit} className="grid min-h-0 flex-1 gap-4 overflow-y-auto p-4 lg:grid-cols-[380px_1fr]">
           <div className="space-y-4">
             <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="Nome do deck" required />
             <textarea
@@ -246,8 +272,30 @@ function DeckFormModal({
               className="min-h-24 w-full rounded-md border bg-background/70 px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
               placeholder="Descricao do deck"
             />
-            <Input value={format} onChange={(event) => setFormat(event.target.value)} placeholder="Formato" />
-            <Input value={colors} onChange={(event) => setColors(event.target.value)} placeholder="Cores, ex: Red, Green" />
+            <div className="rounded-md border bg-background/40 p-3">
+              <p className="mb-2 text-sm font-semibold">Cores do deck</p>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {DECK_COLORS.map((color) => {
+                  const selected = colors.includes(color);
+
+                  return (
+                    <button
+                      key={color}
+                      type="button"
+                      onClick={() => toggleColor(color)}
+                      className={`rounded-md border px-3 py-2 text-sm font-bold transition ${
+                        selected
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "bg-background/70 text-muted-foreground hover:border-primary hover:text-foreground"
+                      }`}
+                      aria-pressed={selected}
+                    >
+                      {color}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
             <div className="rounded-md border bg-background/40 p-3">
               <p className="mb-2 text-sm font-semibold">Buscar cartas</p>
@@ -265,7 +313,7 @@ function DeckFormModal({
 
             {error ? <p className="rounded-md bg-red-500/15 p-3 text-sm text-red-200">{error}</p> : null}
 
-            <Button className="w-full" disabled={saving}>
+            <Button type="submit" className="w-full" disabled={saving}>
               {saving ? "Salvando..." : `Salvar deck (${totalCards} cartas)`}
             </Button>
           </div>
@@ -402,10 +450,9 @@ export function PersonalDecks() {
         </Button>
       </div>
 
-      <div className="grid gap-3 rounded-md border bg-card p-3 md:grid-cols-[1fr_180px_180px]">
+      <div className="grid gap-3 rounded-md border bg-card p-3 md:grid-cols-[1fr_180px]">
         <Input placeholder="Buscar deck, leader ou carta" />
         <Input placeholder="Cores" />
-        <Input placeholder="Formato" />
       </div>
 
       {error ? <p className="rounded-md bg-red-500/15 p-3 text-sm text-red-200">{error}</p> : null}
