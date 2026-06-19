@@ -12,8 +12,8 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-sm text-muted-foreground">Perfil de {currentUser.handle}</p>
-        <h1 className="text-3xl font-bold">Oi, {currentUser.name}</h1>
+        <p className="text-sm font-bold text-amber-300">Perfil de {currentUser.handle}</p>
+        <h1 className="text-3xl font-black text-amber-100">Oi, {currentUser.name}</h1>
       </div>
 
       <section className="grid gap-4 md:grid-cols-3">
@@ -34,7 +34,7 @@ export default function DashboardPage() {
 
       <section className="grid gap-6 lg:grid-cols-[1fr_360px]">
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Decks recentes</h2>
+          <h2 className="text-xl font-black text-amber-100">Decks recentes</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {decks.slice(0, 2).map((deck) => (
               <DeckCard key={deck.id} deck={deck} />
@@ -43,7 +43,7 @@ export default function DashboardPage() {
         </div>
         <Card>
           <CardHeader>
-            <CardTitle>Conversas ativas</CardTitle>
+            <CardTitle className="text-amber-100">Conversas ativas</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {posts.map((post) => (
@@ -59,7 +59,7 @@ export default function DashboardPage() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-semibold">Prioridade de compra</h2>
+        <h2 className="text-xl font-black text-amber-100">Prioridade de compra</h2>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {wanted.map((card) => (
             <OpCard key={card.id} card={card} />

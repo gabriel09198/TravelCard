@@ -68,11 +68,11 @@ export function TradeRequestsBoard() {
 
   return (
     <div className="grid gap-5 lg:grid-cols-[380px_1fr]">
-      <Card className="h-fit border-2 border-border/80">
+      <Card className="h-fit border-amber-500/35 bg-card/90">
         <CardHeader>
-          <CardTitle>Nova solicitacao</CardTitle>
+          <CardTitle className="text-amber-100">Nova solicitacao</CardTitle>
           <p className="text-sm text-muted-foreground">
-            Cadastre cartas para troca ou venda e deixe o grupo responder.
+            Publique uma carta no mural do porto para troca ou venda.
           </p>
         </CardHeader>
         <CardContent>
@@ -109,7 +109,7 @@ export function TradeRequestsBoard() {
             <textarea
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              className="min-h-28 w-full rounded-md border bg-background/70 px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              className="min-h-28 w-full rounded-md border border-input bg-slate-950/55 px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:border-amber-300/70 focus-visible:ring-2 focus-visible:ring-ring"
               placeholder="Descricao"
               required
             />
@@ -143,13 +143,13 @@ export function TradeRequestsBoard() {
             <CardContent className="flex min-h-52 items-center justify-center text-center text-muted-foreground">
               <div>
                 <RefreshCw className="mx-auto mb-3 h-8 w-8" />
-                Nenhuma solicitacao cadastrada ainda.
+                Nenhuma solicitacao no porto ainda.
               </div>
             </CardContent>
           </Card>
         ) : (
           requests.map((request) => (
-            <Card key={request.id} className="overflow-hidden">
+            <Card key={request.id} className="overflow-hidden border-amber-500/25 bg-card/90">
               <CardHeader>
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                   <div>
@@ -165,7 +165,7 @@ export function TradeRequestsBoard() {
                       </Badge>
                       {request.cardCode ? <Badge>{request.cardCode}</Badge> : null}
                     </div>
-                    <CardTitle>{request.cardName}</CardTitle>
+                    <CardTitle className="text-amber-100">{request.cardName}</CardTitle>
                   </div>
                   <p className="text-sm text-muted-foreground">
                     {request.createdAt.toLocaleDateString("pt-BR")}

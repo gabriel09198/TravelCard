@@ -7,17 +7,17 @@ import type { Card } from "@/types/opcg";
 export function OpCard({ card }: { card: Card }) {
   return (
     <CardShell className="overflow-hidden">
-      <div className="bg-muted p-3">
+      <div className="bg-gradient-to-br from-slate-950 to-yellow-950/20 p-3">
         {card.imageUrl ? (
           <Image
             src={card.imageUrl}
             alt={card.name}
             width={300}
             height={420}
-            className="mx-auto aspect-[5/7] w-full max-w-[180px] rounded-md object-cover shadow-sm"
+            className="mx-auto aspect-[5/7] w-full max-w-[180px] rounded-md border border-amber-500/25 object-cover shadow-lg shadow-black/30"
           />
         ) : (
-          <div className="mx-auto flex aspect-[5/7] w-full max-w-[180px] items-center justify-center rounded-md border bg-background p-4 text-center text-sm font-semibold text-muted-foreground">
+          <div className="mx-auto flex aspect-[5/7] w-full max-w-[180px] items-center justify-center rounded-md border border-amber-500/25 bg-background p-4 text-center text-sm font-semibold text-muted-foreground">
             Sem imagem
           </div>
         )}
@@ -26,9 +26,9 @@ export function OpCard({ card }: { card: Card }) {
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="text-xs font-medium text-muted-foreground">{card.code}</p>
-            <CardTitle className="mt-1 text-base leading-snug">{card.name}</CardTitle>
+            <CardTitle className="mt-1 text-base leading-snug text-amber-100">{card.name}</CardTitle>
           </div>
-          <span className="shrink-0 rounded-sm bg-accent px-2 py-1 text-xs font-semibold">
+          <span className="shrink-0 rounded-sm border border-amber-300/30 bg-accent px-2 py-1 text-xs font-bold text-accent-foreground">
             {card.rarity}
           </span>
         </div>

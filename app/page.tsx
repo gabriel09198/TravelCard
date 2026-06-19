@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, MessageSquareText, Search, ShieldCheck } from "lucide-react";
+import { Anchor, ArrowRight, MessageSquareText, Search, ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,14 +27,14 @@ export default function HomePage() {
     <div className="space-y-10">
       <section className="grid min-h-[calc(100vh-12rem)] items-center gap-8 py-8 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="space-y-6">
-          <p className="text-sm font-semibold uppercase tracking-normal text-primary">One Piece Card Game</p>
+          <p className="text-sm font-bold uppercase tracking-normal text-amber-300">Sistema de cartas e decks</p>
           <div className="space-y-4">
-            <h1 className="max-w-3xl text-4xl font-bold leading-tight sm:text-5xl">
+            <h1 className="max-w-3xl text-4xl font-black leading-tight text-amber-100 sm:text-5xl">
               Bastardos do One Piece
             </h1>
             <p className="max-w-2xl text-lg text-muted-foreground">
-              Um sistema para sua tripulacao pesquisar cartas, montar decks, controlar colecao,
-              combinar trocas e conversar sobre One Piece TCG em um so lugar.
+              Um porto seguro para sua tripulacao pesquisar cartas, montar decks, controlar colecao,
+              combinar trocas e conversar sobre TCG em um so lugar.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
@@ -50,18 +50,20 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="rounded-md border bg-card/80 p-5 shadow-2xl shadow-black/30 backdrop-blur">
+        <div className="rounded-md border border-amber-500/30 bg-card/85 p-5 shadow-2xl shadow-black/35 backdrop-blur">
           <div className="grid gap-3">
             {["Cartas", "Decks", "Trocas", "Chat"].map((type, index) => (
               <div
                 key={type}
-                className="flex items-center justify-between rounded-md border bg-background/65 p-4 shadow-sm"
+                className="flex items-center justify-between rounded-md border border-amber-500/20 bg-background/65 p-4 shadow-sm"
               >
                 <div>
-                  <p className="text-sm font-semibold">{type}</p>
-                  <p className="text-xs text-muted-foreground">Organizacao para jogar com o grupo</p>
+                  <p className="text-sm font-bold text-amber-100">{type}</p>
+                  <p className="text-xs text-muted-foreground">Organizacao para navegar com o grupo</p>
                 </div>
-                <span className="text-2xl font-bold text-primary">{index + 1}</span>
+                <span className="flex h-9 w-9 items-center justify-center rounded-md border border-amber-500/25 bg-amber-500/10 text-amber-200">
+                  {index === 0 ? <Anchor className="h-4 w-4" /> : index + 1}
+                </span>
               </div>
             ))}
           </div>
@@ -75,7 +77,7 @@ export default function HomePage() {
           return (
             <Card key={feature.title}>
               <CardHeader>
-                <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-md bg-secondary">
+                <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-md border border-amber-500/25 bg-secondary">
                   <Icon className="h-5 w-5" />
                 </div>
                 <CardTitle>{feature.title}</CardTitle>

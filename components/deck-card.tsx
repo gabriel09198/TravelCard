@@ -61,7 +61,7 @@ export function DeckCard({ deck }: { deck: Deck }) {
   );
 
   return (
-    <article className="overflow-hidden rounded-md border border-zinc-800 bg-black text-white shadow-xl shadow-black/20">
+    <article className="overflow-hidden rounded-md border border-amber-500/30 bg-slate-950/92 text-white shadow-2xl shadow-black/35">
       <div className="space-y-4 p-3 sm:p-4">
         <div className="flex gap-3">
           <div
@@ -94,7 +94,7 @@ export function DeckCard({ deck }: { deck: Deck }) {
             <h2 className="text-2xl font-black leading-tight tracking-normal text-zinc-50 sm:text-3xl">
               {deck.name}
             </h2>
-            <p className="mt-1 text-sm text-sky-300">
+            <p className="mt-1 text-sm text-amber-300">
               {deck.owner.toLowerCase()} <span className="text-zinc-500">- atualizado em {deck.updatedAt}</span>
             </p>
             <p className="mt-3 max-w-4xl text-sm leading-6 text-zinc-400">
@@ -110,27 +110,27 @@ export function DeckCard({ deck }: { deck: Deck }) {
               {color}
             </Badge>
           ))}
-          <Badge className="border-0 bg-zinc-700 text-zinc-100">{formatLabel[deck.format]}</Badge>
-          <Badge className="border-0 bg-zinc-700 text-zinc-100">{totalCards} cartas</Badge>
+          <Badge className="border border-amber-500/25 bg-amber-500/10 text-amber-100">{formatLabel[deck.format]}</Badge>
+          <Badge className="border border-amber-500/25 bg-amber-500/10 text-amber-100">{totalCards} cartas</Badge>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <Button size="sm" className="h-9 bg-blue-600 px-3 font-semibold hover:bg-blue-500">
+          <Button size="sm" className="h-9 px-3">
             <Copy className="h-4 w-4" />
             Copiar
           </Button>
-          <Button size="sm" className="h-9 bg-violet-600 px-3 font-semibold hover:bg-violet-500">
+          <Button size="sm" variant="outline" className="h-9 px-3">
             <Edit3 className="h-4 w-4" />
             Editar
           </Button>
-          <Button size="sm" className="h-9 bg-rose-600 px-3 font-semibold hover:bg-rose-500">
+          <Button size="sm" className="h-9 px-3">
             <ShoppingCart className="h-4 w-4" />
             Comprar ~${totalPrice.toFixed(2)}
           </Button>
           <Button
             size="sm"
             variant="secondary"
-            className="h-9 bg-zinc-800 px-3 font-semibold text-zinc-100 hover:bg-zinc-700"
+            className="h-9 px-3"
           >
             <Share2 className="h-4 w-4" />
             Compartilhar
@@ -150,7 +150,7 @@ export function DeckCard({ deck }: { deck: Deck }) {
                 >
                   <div
                     className={cn(
-                      "relative aspect-[5/7] overflow-hidden rounded-md border-2 shadow-lg shadow-black/25",
+                      "relative aspect-[5/7] overflow-hidden rounded-md border-2 shadow-lg shadow-black/30 transition hover:-translate-y-1 hover:shadow-amber-950/30",
                       style.frame
                     )}
                   >
