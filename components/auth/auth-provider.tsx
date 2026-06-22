@@ -32,11 +32,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let authVersion = 0;
+
     return onAuthStateChanged(firebaseAuth, async (currentUser) => {
+      authVersion += 1;
+      const currentVersion = authVersion;
+
+      setLoading(true);
       setUser(currentUser);
+      setProfile(null);
 
       if (currentUser) {
         const userProfile = await ensureUserProfile(currentUser);
+
+        if (currentVersion !== authVersion) {
+          return;
+        }
+
         setProfile(
           userProfile ?? {
             id: currentUser.uid,
@@ -44,11 +56,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             email: currentUser.email ?? ""
           }
         );
-      } else {
-        setProfile(null);
       }
 
-      setLoading(false);
+      if (currentVersion === authVersion) {
+        setLoading(false);
+      }
     });
   }, []);
 

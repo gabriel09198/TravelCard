@@ -40,9 +40,10 @@ export async function saveUserProfile(
   const profile = buildUserProfile(user, name, handle);
 
   await setDoc(
-    doc(firestore, "usuarios", user.uid),
+    doc(firestore, "users", user.uid),
     {
       ...profile,
+      userId: user.uid,
       nome: profile.name,
       updatedAt: serverTimestamp(),
       createdAt: serverTimestamp(),
@@ -99,7 +100,7 @@ export async function sendPasswordReset(email: string): Promise<void> {
 
 export async function getUserProfile(userId: string): Promise<AppUserProfile | null> {
   try {
-    const snapshot = await getDoc(doc(firestore, "usuarios", userId));
+    const snapshot = await getDoc(doc(firestore, "users", userId));
 
     if (!snapshot.exists()) {
       return null;

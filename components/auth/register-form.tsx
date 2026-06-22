@@ -36,7 +36,7 @@ export function RegisterForm() {
 
       if (!result.profileSaved) {
         setWarning(
-          "Conta criada no Authentication, mas o Firestore bloqueou a criacao do perfil em usuarios. Confira as regras do Firestore."
+          "Conta criada no Authentication, mas o Firestore bloqueou a criacao do perfil em users. Confira as regras do Firestore."
         );
         return;
       }

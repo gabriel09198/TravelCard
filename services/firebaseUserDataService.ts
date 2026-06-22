@@ -5,11 +5,11 @@ import {
   doc,
   getDocs,
   onSnapshot,
-  orderBy,
   query,
   serverTimestamp,
   setDoc,
-  Timestamp
+  Timestamp,
+  where
 } from "firebase/firestore";
 
 import { firestore } from "@/lib/firebase";
@@ -20,13 +20,13 @@ import type {
   UserWishlistCard
 } from "@/types/onePieceCard";
 
-const USERS_COLLECTION = "usuarios";
+const USERS_COLLECTION = "users";
 
 function userDocument(uid: string) {
   return doc(firestore, USERS_COLLECTION, uid);
 }
 
-function userSubcollection(uid: string, subcollection: "cartas" | "decks" | "wishlist") {
+function userSubcollection(uid: string, subcollection: "collection" | "decks" | "wishlist") {
   return collection(firestore, USERS_COLLECTION, uid, subcollection);
 }
 
@@ -38,6 +38,7 @@ export async function ensureUsuarioDocument(uid: string, name: string, email: st
   await setDoc(
     userDocument(uid),
     {
+      userId: uid,
       nome: name,
       email,
       atualizadoEm: serverTimestamp(),
@@ -49,8 +50,9 @@ export async function ensureUsuarioDocument(uid: string, name: string, email: st
 
 export async function saveUserOwnedCard(uid: string, card: UserOwnedCard): Promise<void> {
   await setDoc(
-    doc(userSubcollection(uid, "cartas"), card.id),
+    doc(userSubcollection(uid, "collection"), card.id),
     {
+      userId: uid,
       nome: card.name,
       codigo: card.code,
       imagem: card.imageUrl ?? "",
@@ -71,24 +73,26 @@ export function subscribeUserOwnedCards(
   onError?: (error: Error) => void
 ) {
   return onSnapshot(
-    query(userSubcollection(uid, "cartas"), orderBy("nome", "asc")),
+    query(userSubcollection(uid, "collection"), where("userId", "==", uid)),
     (snapshot) => {
       onChange(
-        snapshot.docs.map((document) => {
-          const data = document.data();
+        snapshot.docs
+          .map((document) => {
+            const data = document.data();
 
-          return {
-            id: document.id,
-            name: data.nome ?? "Carta sem nome",
-            code: data.codigo ?? document.id,
-            imageUrl: data.imagem || undefined,
-            quantity: data.quantidade ?? 0,
-            type: data.tipo || undefined,
-            color: data.cor || undefined,
-            rarity: data.raridade || undefined,
-            notes: data.observacoes || undefined
-          };
-        })
+            return {
+              id: document.id,
+              name: data.nome ?? "Carta sem nome",
+              code: data.codigo ?? document.id,
+              imageUrl: data.imagem || undefined,
+              quantity: data.quantidade ?? 0,
+              type: data.tipo || undefined,
+              color: data.cor || undefined,
+              rarity: data.raridade || undefined,
+              notes: data.observacoes || undefined
+            };
+          })
+          .sort((a, b) => a.name.localeCompare(b.name))
       );
     },
     onError
@@ -99,6 +103,7 @@ export async function saveUserWishlistCard(uid: string, card: UserWishlistCard):
   await setDoc(
     doc(userSubcollection(uid, "wishlist"), card.id),
     {
+      userId: uid,
       nome: card.name,
       codigo: card.code,
       imagem: card.imageUrl ?? "",
@@ -116,21 +121,23 @@ export function subscribeUserWishlist(
   onError?: (error: Error) => void
 ) {
   return onSnapshot(
-    query(userSubcollection(uid, "wishlist"), orderBy("nome", "asc")),
+    query(userSubcollection(uid, "wishlist"), where("userId", "==", uid)),
     (snapshot) => {
       onChange(
-        snapshot.docs.map((document) => {
-          const data = document.data();
+        snapshot.docs
+          .map((document) => {
+            const data = document.data();
 
-          return {
-            id: document.id,
-            name: data.nome ?? "Carta sem nome",
-            code: data.codigo ?? document.id,
-            imageUrl: data.imagem || undefined,
-            desiredQuantity: data.quantidadeDesejada ?? 1,
-            notes: data.observacoes || undefined
-          };
-        })
+            return {
+              id: document.id,
+              name: data.nome ?? "Carta sem nome",
+              code: data.codigo ?? document.id,
+              imageUrl: data.imagem || undefined,
+              desiredQuantity: data.quantidadeDesejada ?? 1,
+              notes: data.observacoes || undefined
+            };
+          })
+          .sort((a, b) => a.name.localeCompare(b.name))
       );
     },
     onError
@@ -139,6 +146,7 @@ export function subscribeUserWishlist(
 
 export async function createUserDeck(uid: string, deck: Omit<UserDeck, "id" | "userId">): Promise<string> {
   const documentRef = await addDoc(userSubcollection(uid, "decks"), {
+    userId: uid,
     nome: deck.name,
     descricao: deck.description ?? "",
     cores: deck.colors ?? [],
@@ -161,6 +169,7 @@ export async function saveUserDeck(uid: string, deck: UserDeck): Promise<void> {
   await setDoc(
     doc(userSubcollection(uid, "decks"), deck.id),
     {
+      userId: uid,
       nome: deck.name,
       descricao: deck.description ?? "",
       cores: deck.colors ?? [],
@@ -188,41 +197,43 @@ export function subscribeUserDecks(
   onError?: (error: Error) => void
 ) {
   return onSnapshot(
-    query(userSubcollection(uid, "decks"), orderBy("atualizadoEm", "desc")),
+    query(userSubcollection(uid, "decks"), where("userId", "==", uid)),
     (snapshot) => {
       onChange(
-        snapshot.docs.map((document) => {
-          const data = document.data();
+        snapshot.docs
+          .map((document) => {
+            const data = document.data();
 
-          return {
-            id: document.id,
-            userId: uid,
-            name: data.nome ?? "Deck sem nome",
-            description: data.descricao ?? "",
-            cards: Array.isArray(data.cartas)
-              ? data.cartas.map(
-                  (card: {
-                    cardId?: string;
-                    nome?: string;
-                    codigo?: string;
-                    imagem?: string;
-                    quantidade?: number;
-                    preco?: number | null;
-                  }) => ({
-                    cardId: card.cardId ?? card.codigo ?? "",
-                    name: card.nome ?? "Carta sem nome",
-                    cardNumber: card.codigo ?? card.cardId ?? "",
-                    imageUrl: card.imagem || undefined,
-                    quantity: card.quantidade ?? 1,
-                    price: card.preco ?? null
-                  })
-                )
-              : [],
-            colors: Array.isArray(data.cores) ? data.cores : [],
-            createdAt: nullableDate(data.criadoEm),
-            updatedAt: nullableDate(data.atualizadoEm)
-          };
-        })
+            return {
+              id: document.id,
+              userId: data.userId ?? uid,
+              name: data.nome ?? "Deck sem nome",
+              description: data.descricao ?? "",
+              cards: Array.isArray(data.cartas)
+                ? data.cartas.map(
+                    (card: {
+                      cardId?: string;
+                      nome?: string;
+                      codigo?: string;
+                      imagem?: string;
+                      quantidade?: number;
+                      preco?: number | null;
+                    }) => ({
+                      cardId: card.cardId ?? card.codigo ?? "",
+                      name: card.nome ?? "Carta sem nome",
+                      cardNumber: card.codigo ?? card.cardId ?? "",
+                      imageUrl: card.imagem || undefined,
+                      quantity: card.quantidade ?? 1,
+                      price: card.preco ?? null
+                    })
+                  )
+                : [],
+              colors: Array.isArray(data.cores) ? data.cores : [],
+              createdAt: nullableDate(data.criadoEm),
+              updatedAt: nullableDate(data.atualizadoEm)
+            };
+          })
+          .sort((a, b) => (b.updatedAt?.getTime() ?? 0) - (a.updatedAt?.getTime() ?? 0))
       );
     },
     onError
@@ -244,7 +255,9 @@ export async function saveUserCardCollection(card: UserCardCollection): Promise<
 }
 
 export async function getUserCardCollection(userId: string): Promise<UserCardCollection[]> {
-  const snapshot = await getDocs(userSubcollection(userId, "cartas"));
+  const snapshot = await getDocs(
+    query(userSubcollection(userId, "collection"), where("userId", "==", userId))
+  );
 
   return snapshot.docs.map((document) => {
     const data = document.data();
@@ -266,14 +279,16 @@ export async function getUserCardCollection(userId: string): Promise<UserCardCol
 }
 
 export async function getUserDecks(userId: string): Promise<UserDeck[]> {
-  const snapshot = await getDocs(userSubcollection(userId, "decks"));
+  const snapshot = await getDocs(
+    query(userSubcollection(userId, "decks"), where("userId", "==", userId))
+  );
 
   return snapshot.docs.map((document) => {
     const data = document.data();
 
     return {
       id: document.id,
-      userId,
+      userId: data.userId ?? userId,
       name: data.nome ?? "Deck sem nome",
       description: data.descricao ?? "",
       cards: Array.isArray(data.cartas)

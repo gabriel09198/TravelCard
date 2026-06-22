@@ -254,7 +254,7 @@ function DeckFormModal({
       onSaved();
       onClose();
     } catch (saveError) {
-      console.error("Erro ao salvar deck em usuarios/{uid}/decks:", saveError);
+      console.error("Erro ao salvar deck em users/{uid}/decks:", saveError);
       setError(getDeckFirestoreErrorMessage(saveError));
     } finally {
       setSaving(false);
@@ -268,7 +268,7 @@ function DeckFormModal({
           <div>
             <h2 className="text-2xl font-black text-amber-100">{deck ? "Editar deck" : "Criar deck"}</h2>
             <p className="text-sm text-muted-foreground">
-              Monte sua tripulacao, defina quantidades e salve em usuarios/{user?.uid}/decks.
+              Monte sua tripulacao, defina quantidades e salve em users/{user?.uid}/decks.
             </p>
           </div>
           <Button type="button" variant="ghost" size="icon" onClick={onClose}>
@@ -412,7 +412,14 @@ export function PersonalDecks() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!user) return undefined;
+    if (!user) {
+      setDecks([]);
+      setEditingDeck(null);
+      setFormOpen(false);
+      setError("");
+      setLoading(false);
+      return undefined;
+    }
 
     setLoading(true);
     return subscribeUserDecks(
@@ -422,7 +429,7 @@ export function PersonalDecks() {
         setLoading(false);
       },
       (loadError) => {
-        console.error("Erro ao carregar decks em usuarios/{uid}/decks:", loadError);
+        console.error("Erro ao carregar decks em users/{uid}/decks:", loadError);
         setError(
           loadError instanceof FirebaseError && loadError.code === "permission-denied"
             ? "O Firestore bloqueou a leitura dos decks. Publique as regras em firestore.rules no Firebase Console."
@@ -459,7 +466,7 @@ export function PersonalDecks() {
         <div>
           <h1 className="text-3xl font-black text-amber-100">Meus decks</h1>
           <p className="text-muted-foreground">
-            Monte sua frota de decks em usuarios/{user?.uid}/decks.
+            Monte sua frota de decks em users/{user?.uid}/decks.
           </p>
         </div>
         <Button onClick={openCreateForm}>

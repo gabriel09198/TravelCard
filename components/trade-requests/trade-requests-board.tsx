@@ -27,10 +27,17 @@ export function TradeRequestsBoard() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    return subscribeToTradeRequests(setRequests, () => {
+    if (!user) {
+      setRequests([]);
+      setError("");
+      setLoading(false);
+      return undefined;
+    }
+
+    return subscribeToTradeRequests(user.uid, setRequests, () => {
       setError("Nao foi possivel carregar as solicitacoes.");
     });
-  }, []);
+  }, [user]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

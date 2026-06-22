@@ -21,7 +21,12 @@ export function PersonalWishlist() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!user) return undefined;
+    if (!user) {
+      setCards([]);
+      setError("");
+      setLoading(false);
+      return undefined;
+    }
 
     setLoading(true);
     return subscribeUserWishlist(
@@ -62,7 +67,7 @@ export function PersonalWishlist() {
         <div>
           <h1 className="text-3xl font-bold">Cartas desejadas</h1>
           <p className="text-muted-foreground">
-            Wishlist salva em usuarios/{user?.uid}/wishlist.
+            Wishlist salva em users/{user?.uid}/wishlist.
           </p>
         </div>
         <Button onClick={() => void addExamples()}>

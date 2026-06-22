@@ -9,8 +9,7 @@ export default function TradeRequestsPage() {
         </p>
         <h1 className="mt-1 text-3xl font-bold">Solicitacoes de troca e venda</h1>
         <p className="mt-2 max-w-3xl text-muted-foreground">
-          Publique cartas que voce quer trocar ou vender e acompanhe o que outras pessoas
-          da tripulacao estao procurando.
+          Publique e acompanhe somente as suas solicitacoes salvas em users/{`{seu UID}`}/requests.
         </p>
       </div>
       <TradeRequestsBoard />

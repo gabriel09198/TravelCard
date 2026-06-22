@@ -21,7 +21,12 @@ export function PersonalCollection() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!user) return undefined;
+    if (!user) {
+      setCards([]);
+      setError("");
+      setLoading(false);
+      return undefined;
+    }
 
     setLoading(true);
     return subscribeUserOwnedCards(
@@ -62,7 +67,7 @@ export function PersonalCollection() {
       <div>
         <h1 className="text-3xl font-bold">Minha colecao</h1>
         <p className="text-muted-foreground">
-          Cartas salvas em usuarios/{user?.uid}/cartas.
+          Cartas salvas em users/{user?.uid}/collection.
         </p>
       </div>
 

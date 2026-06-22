@@ -1,45 +1,36 @@
-import { DeckCard } from "@/components/deck-card";
+import { Users } from "lucide-react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { decks, profiles } from "@/lib/mock-data";
 
 export default function FriendsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Decks dos colegas</h1>
-        <p className="text-muted-foreground">Veja o que o pessoal esta montando e jogando.</p>
+        <h1 className="text-3xl font-bold">Colegas</h1>
+        <p className="text-muted-foreground">
+          Area preparada para recursos sociais sem expor decks ou colecoes de outro usuario.
+        </p>
       </div>
 
-      <section className="grid gap-4 md:grid-cols-3">
-        {profiles.map((profile) => (
-          <Card key={profile.id}>
-            <CardHeader>
-              <CardTitle>{profile.name}</CardTitle>
-              <p className="text-sm text-muted-foreground">{profile.handle}</p>
-            </CardHeader>
-            <CardContent className="grid grid-cols-3 gap-2 text-center text-sm">
-              <div>
-                <p className="font-semibold">{profile.decks}</p>
-                <p className="text-xs text-muted-foreground">Decks</p>
-              </div>
-              <div>
-                <p className="font-semibold">{profile.ownedCards}</p>
-                <p className="text-xs text-muted-foreground">Cartas</p>
-              </div>
-              <div>
-                <p className="font-semibold">{profile.wantedCards}</p>
-                <p className="text-xs text-muted-foreground">Desejos</p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </section>
-
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {decks.map((deck) => (
-          <DeckCard key={deck.id} deck={deck} />
-        ))}
-      </div>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-md border border-amber-500/25 bg-secondary text-amber-100">
+              <Users className="h-5 w-5" />
+            </div>
+            <div>
+              <CardTitle className="text-amber-100">Privacidade ativada</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Decks, colecao e desejos agora carregam somente do UID autenticado.
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="text-sm text-muted-foreground">
+          Quando a area social for conectada ao Firebase, cada consulta tambem deve filtrar por
+          userId ou usar subcolecoes em users/{`{uid}`}.
+        </CardContent>
+      </Card>
     </div>
   );
 }
