@@ -279,7 +279,11 @@ export async function sendChatMessage(
   input: SendChatMessageInput
 ): Promise<void> {
   if (chatId === GENERAL_CHAT_ID) {
-    await ensureGeneralChat(input.userId);
+    try {
+      await ensureGeneralChat(input.userId);
+    } catch (error) {
+      console.error("Erro ao garantir documento do Chat Geral:", error);
+    }
   }
 
   await addDoc(messagesCollection(chatId), {

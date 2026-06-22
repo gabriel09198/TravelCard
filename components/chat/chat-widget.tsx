@@ -14,6 +14,7 @@ import {
 import { useAuth } from "@/components/auth/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { firebaseAuth } from "@/lib/firebase";
 import {
   createCrewChat,
   createPrivateChat,
@@ -28,6 +29,8 @@ import {
 import type { CrewOption } from "@/services/chatMessagesService";
 import type { ChatMessage, ChatRoom, ChatRoomType } from "@/types/onePieceCard";
 import { cn } from "@/lib/utils";
+
+type ChatAction = "" | "join-crew" | "create-crew" | "create-private";
 
 const chatSectionLabels: Record<ChatRoomType, string> = {
   general: "Chat Geral",
@@ -57,6 +60,7 @@ export function ChatWidget() {
   const [joinPassword, setJoinPassword] = useState("");
   const [privateName, setPrivateName] = useState("");
   const [privateMembers, setPrivateMembers] = useState("");
+  const [selectedAction, setSelectedAction] = useState<ChatAction>("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -162,16 +166,22 @@ export function ChatWidget() {
 
     setText("");
     setError("");
+    const authUser = firebaseAuth.currentUser;
+
+    if (!authUser) {
+      setError("Voce precisa estar logado para enviar mensagem.");
+      return;
+    }
 
     try {
       await sendChatMessage(activeChat.id, {
         text: trimmedText,
-        userId: user.uid,
-        userName: profile?.name ?? user.displayName ?? user.email ?? "Usuario",
-        userEmail: user.email ?? ""
+        userId: authUser.uid,
+        userName: profile?.name ?? authUser.displayName ?? authUser.email ?? "Usuario",
+        userEmail: authUser.email ?? ""
       });
     } catch (sendError) {
-      console.error("Erro ao enviar mensagem:", sendError);
+      console.error("Erro real ao enviar mensagem:", sendError);
       setError("Nao foi possivel enviar a mensagem.");
       setText(trimmedText);
     }
@@ -384,13 +394,23 @@ export function ChatWidget() {
             </div>
 
             <div className="border-t border-amber-500/20 bg-card p-3">
-              <div className="mb-3 grid gap-3 xl:grid-cols-3">
-                <form
-                  onSubmit={handleJoinCrew}
-                  className="rounded-md border border-amber-500/20 bg-background/35 p-2"
+              <div className="mb-3 rounded-md border border-amber-500/20 bg-background/35 p-3">
+                <label className="mb-2 block text-xs font-bold text-amber-200">
+                  O que voce deseja fazer?
+                </label>
+                <select
+                  value={selectedAction}
+                  onChange={(event) => setSelectedAction(event.target.value as ChatAction)}
+                  className="h-10 w-full rounded-md border border-input bg-slate-950/55 px-3 py-2 text-sm text-foreground outline-none focus-visible:border-amber-300/70 focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <p className="mb-2 text-xs font-bold text-amber-200">Entrar em tripulacao</p>
-                  <div className="grid gap-2">
+                  <option value="">Selecione uma opcao</option>
+                  <option value="join-crew">Entrar em tripulacao</option>
+                  <option value="create-crew">Criar tripulacao</option>
+                  <option value="create-private">Criar grupo privado</option>
+                </select>
+
+                {selectedAction === "join-crew" ? (
+                  <form onSubmit={handleJoinCrew} className="mt-3 grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
                     <select
                       value={joinCrewKey}
                       onChange={(event) => setJoinCrewKey(event.target.value)}
@@ -410,8 +430,6 @@ export function ChatWidget() {
                         placeholder="Nome da tripulacao"
                       />
                     ) : null}
-                  </div>
-                  <div className="mt-2 flex gap-2">
                     <Input
                       value={joinPassword}
                       onChange={(event) => setJoinPassword(event.target.value)}
@@ -419,17 +437,15 @@ export function ChatWidget() {
                       type="password"
                       className="min-w-0"
                     />
-                    <Button type="submit" size="icon" variant="outline" disabled={busy} aria-label="Entrar">
+                    <Button type="submit" variant="outline" disabled={busy}>
                       <LockKeyhole className="h-4 w-4" />
+                      Entrar
                     </Button>
-                  </div>
-                </form>
-                <form
-                  onSubmit={handleCreateCrew}
-                  className="rounded-md border border-amber-500/20 bg-background/35 p-2"
-                >
-                  <p className="mb-2 text-xs font-bold text-amber-200">Criar tripulacao</p>
-                  <div className="grid gap-2">
+                  </form>
+                ) : null}
+
+                {selectedAction === "create-crew" ? (
+                  <form onSubmit={handleCreateCrew} className="mt-3 grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
                     <select
                       value={selectedCrewKey}
                       onChange={(event) => setSelectedCrewKey(event.target.value)}
@@ -449,8 +465,6 @@ export function ChatWidget() {
                         placeholder="Nome personalizado"
                       />
                     ) : null}
-                  </div>
-                  <div className="mt-2 flex gap-2">
                     <Input
                       value={crewPassword}
                       onChange={(event) => setCrewPassword(event.target.value)}
@@ -458,17 +472,15 @@ export function ChatWidget() {
                       type="password"
                       className="min-w-0"
                     />
-                    <Button type="submit" size="icon" variant="outline" disabled={busy} aria-label="Criar tripulacao">
+                    <Button type="submit" variant="outline" disabled={busy}>
                       <Plus className="h-4 w-4" />
+                      Criar
                     </Button>
-                  </div>
-                </form>
-                <form
-                  onSubmit={handleCreatePrivate}
-                  className="rounded-md border border-amber-500/20 bg-background/35 p-2"
-                >
-                  <p className="mb-2 text-xs font-bold text-amber-200">Criar grupo privado</p>
-                  <div className="grid gap-2 sm:grid-cols-[0.8fr_1fr_auto] xl:grid-cols-1 2xl:grid-cols-[0.8fr_1fr_auto]">
+                  </form>
+                ) : null}
+
+                {selectedAction === "create-private" ? (
+                  <form onSubmit={handleCreatePrivate} className="mt-3 grid gap-2 sm:grid-cols-[0.8fr_1fr_auto]">
                     <Input
                       value={privateName}
                       onChange={(event) => setPrivateName(event.target.value)}
@@ -481,11 +493,12 @@ export function ChatWidget() {
                       placeholder="UIDs separados por virgula"
                       className="min-w-0"
                     />
-                    <Button type="submit" size="icon" variant="outline" disabled={busy} aria-label="Criar grupo">
+                    <Button type="submit" variant="outline" disabled={busy}>
                       <Users className="h-4 w-4" />
+                      Criar grupo
                     </Button>
-                  </div>
-                </form>
+                  </form>
+                ) : null}
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-2">
