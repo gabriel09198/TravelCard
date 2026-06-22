@@ -14,19 +14,19 @@ const colorClassByName: Record<string, string> = {
 
 export function OnePieceCardItem({ card }: { card: OnePieceCard }) {
   return (
-    <article className="grid overflow-hidden rounded-md border border-amber-500/25 bg-card/90 shadow-xl shadow-black/25 transition-all hover:-translate-y-1 hover:border-amber-300/55 hover:shadow-amber-950/20 sm:grid-cols-[184px_1fr]">
-      <div className="flex items-center justify-center bg-gradient-to-br from-slate-950 to-yellow-950/25 p-4">
+    <article className="bounty-card grid overflow-hidden rounded-lg transition-all hover:-translate-y-1 hover:border-amber-300/60 hover:shadow-amber-950/25 sm:grid-cols-[184px_1fr]">
+      <div className="flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-yellow-950/35 p-4">
         {card.imageUrl ? (
           <Image
             src={card.imageUrl}
             alt={card.name}
             width={300}
             height={420}
-            className="aspect-[5/7] w-full max-w-[164px] rounded-md border border-amber-500/25 object-cover shadow-lg shadow-black/35"
+            className="aspect-[5/7] w-full max-w-[164px] rounded-md border border-amber-400/35 object-cover shadow-lg shadow-black/40"
             loading="lazy"
           />
         ) : (
-          <div className="flex aspect-[5/7] w-full max-w-[164px] items-center justify-center rounded-md border border-amber-500/25 bg-background p-3 text-center text-sm font-semibold text-muted-foreground">
+          <div className="flex aspect-[5/7] w-full max-w-[164px] items-center justify-center rounded-md border border-amber-500/25 bg-background/80 p-3 text-center text-sm font-semibold text-muted-foreground">
             Sem imagem
           </div>
         )}
@@ -38,7 +38,7 @@ export function OnePieceCardItem({ card }: { card: OnePieceCard }) {
             <p className="text-xs font-semibold uppercase tracking-normal text-muted-foreground">
               {card.code} - {card.setName}
             </p>
-            <h2 className="mt-1 text-xl font-black leading-tight text-amber-100">{card.name}</h2>
+            <h2 className="pirate-title mt-1 text-xl font-black leading-tight">{card.name}</h2>
           </div>
           <div className="flex flex-wrap gap-2 sm:justify-end">
             <Badge className={colorClassByName[card.color] ?? "bg-secondary"}>
@@ -72,7 +72,7 @@ export function OnePieceCardItem({ card }: { card: OnePieceCard }) {
         {card.subTypes.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {card.subTypes.slice(0, 6).map((subType) => (
-              <Badge key={subType} className="border-amber-500/20 bg-background text-muted-foreground">
+              <Badge key={subType} className="border-amber-500/25 bg-background/80 text-muted-foreground">
                 {subType}
               </Badge>
             ))}

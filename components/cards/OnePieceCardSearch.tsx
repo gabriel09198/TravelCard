@@ -39,7 +39,7 @@ export function OnePieceCardSearch() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid gap-2 rounded-md border bg-card p-3 shadow-sm sm:grid-cols-[1fr_auto_auto]"
+      className="pirate-panel grid gap-2 rounded-lg p-3 sm:grid-cols-[1fr_auto_auto]"
     >
       <div className="relative">
         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />

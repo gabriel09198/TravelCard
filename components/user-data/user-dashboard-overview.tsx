@@ -22,12 +22,12 @@ function RecentUserDeck({ deck }: { deck: UserDeck }) {
       <CardHeader>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <CardTitle className="truncate text-amber-100">{deck.name}</CardTitle>
+            <CardTitle className="pirate-title truncate">{deck.name}</CardTitle>
             <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
               {deck.description || "Deck salvo na sua conta."}
             </p>
           </div>
-          <span className="shrink-0 rounded-md border border-amber-500/25 bg-amber-500/10 px-2 py-1 text-xs font-bold text-amber-100">
+          <span className="shrink-0 rounded-md border border-amber-400/35 bg-amber-500/15 px-2 py-1 text-xs font-bold text-amber-100">
             {totalCards} cartas
           </span>
         </div>
@@ -36,7 +36,7 @@ function RecentUserDeck({ deck }: { deck: UserDeck }) {
         <div className="grid grid-cols-4 gap-2">
           {deck.cards.slice(0, 8).map((card) => (
             <div key={card.cardNumber} className="text-center">
-              <div className="relative aspect-[5/7] overflow-hidden rounded border border-amber-500/25 bg-muted/40">
+              <div className="relative aspect-[5/7] overflow-hidden rounded border border-amber-400/30 bg-muted/40 shadow-sm shadow-black/25">
                 {card.imageUrl ? (
                   <Image
                     src={card.imageUrl}
@@ -98,11 +98,14 @@ export function UserDashboardOverview() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-sm font-bold text-amber-300">Perfil de {profile?.handle || user?.email}</p>
-        <h1 className="text-3xl font-black text-amber-100">
+      <div className="pirate-parchment rounded-lg p-5">
+        <p className="pirate-subtitle text-sm">Perfil de {profile?.handle || user?.email}</p>
+        <h1 className="pirate-title text-3xl font-black">
           Oi, {profile?.name ?? user?.displayName ?? "tripulante"}
         </h1>
+        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+          Seu convés pessoal: decks, coleção e desejos carregados somente da sua conta.
+        </p>
       </div>
 
       {error ? <p className="rounded-md bg-red-500/15 p-3 text-sm text-red-200">{error}</p> : null}
@@ -125,11 +128,11 @@ export function UserDashboardOverview() {
 
       <section className="grid gap-6 lg:grid-cols-[1fr_360px]">
         <div className="space-y-4">
-          <h2 className="text-xl font-black text-amber-100">Decks recentes</h2>
+          <h2 className="pirate-title text-xl font-black">Decks recentes</h2>
           {decks.length === 0 ? (
-            <Card>
+            <Card className="pirate-parchment">
               <CardContent className="flex min-h-52 items-center justify-center text-center text-muted-foreground">
-                Nenhum deck salvo para este usuario.
+                Nenhum deck neste navio ainda. Monte sua tripulacao escolhendo suas cartas.
               </CardContent>
             </Card>
           ) : (
@@ -142,7 +145,7 @@ export function UserDashboardOverview() {
         </div>
         <Card>
           <CardHeader>
-            <CardTitle className="text-amber-100">Resumo da tripulacao</CardTitle>
+            <CardTitle className="pirate-title">Resumo da tripulacao</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex gap-3 rounded-md border border-amber-500/20 bg-background/55 p-3">
@@ -156,9 +159,9 @@ export function UserDashboardOverview() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-black text-amber-100">Prioridade de compra</h2>
+        <h2 className="pirate-title text-xl font-black">Prioridade de compra</h2>
         {wishlist.length === 0 ? (
-          <Card>
+          <Card className="pirate-parchment">
             <CardContent className="p-6 text-sm text-muted-foreground">
               Nenhuma carta desejada salva para este usuario.
             </CardContent>

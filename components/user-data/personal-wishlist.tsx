@@ -63,9 +63,10 @@ export function PersonalWishlist() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+      <div className="pirate-parchment flex flex-col justify-between gap-4 rounded-lg p-5 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-3xl font-bold">Cartas desejadas</h1>
+          <p className="pirate-subtitle text-sm">Tesouros procurados</p>
+          <h1 className="pirate-title text-3xl font-black">Cartas desejadas</h1>
           <p className="text-muted-foreground">
             Wishlist salva em users/{user?.uid}/wishlist.
           </p>
@@ -76,15 +77,15 @@ export function PersonalWishlist() {
         </Button>
       </div>
 
-      <div className="rounded-lg border bg-card p-4">
+      <div className="pirate-panel rounded-lg p-4">
         <Input placeholder="Buscar carta desejada" />
       </div>
 
       {error ? <p className="rounded-md bg-red-500/15 p-3 text-sm text-red-200">{error}</p> : null}
 
       {!loading && cards.length === 0 ? (
-        <div className="rounded-md border bg-card p-8 text-center">
-          <p className="font-semibold">Sua lista de desejos ainda esta vazia.</p>
+        <div className="pirate-parchment rounded-lg p-8 text-center">
+          <p className="font-semibold text-amber-100">Sua lista de tesouros ainda esta vazia.</p>
           <p className="mt-2 text-sm text-muted-foreground">
             Cada usuario tem sua propria wishlist protegida pelo UID.
           </p>

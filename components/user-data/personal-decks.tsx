@@ -38,17 +38,17 @@ function PersonalDeckCard({
   onDelete: (deck: UserDeck) => void;
 }) {
   return (
-    <article className="overflow-hidden rounded-md border border-amber-500/30 bg-card/90 shadow-2xl shadow-black/30">
+    <article className="pirate-panel overflow-hidden rounded-lg">
       <div className="space-y-4 p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
-            <h2 className="truncate text-2xl font-black text-amber-100">{deck.name}</h2>
+            <h2 className="pirate-title truncate text-2xl font-black">{deck.name}</h2>
             {deck.description ? (
               <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{deck.description}</p>
             ) : null}
             <div className="mt-2 flex flex-wrap gap-2">
               {deck.colors?.map((color) => (
-                <Badge key={color} className="border-amber-500/30 bg-amber-500/10 text-amber-100">
+                <Badge key={color} className="border-amber-400/35 bg-amber-500/15 text-amber-100">
                   {color}
                 </Badge>
               ))}
@@ -69,11 +69,11 @@ function PersonalDeckCard({
           </div>
         </div>
 
-        <div className="max-h-[36rem] overflow-y-auto pr-1">
+        <div className="pirate-scrollbar max-h-[36rem] overflow-y-auto pr-1">
           <div className="grid grid-cols-[repeat(auto-fill,minmax(128px,1fr))] justify-items-center gap-x-4 gap-y-5 sm:grid-cols-[repeat(auto-fill,minmax(142px,1fr))]">
             {deck.cards.map((card) => (
               <div key={`${deck.id}-${card.cardNumber}`} className="w-full max-w-[158px] text-center">
-                <div className="relative aspect-[5/7] overflow-hidden rounded-md border border-amber-500/25 bg-muted/50 shadow-lg shadow-black/30 transition hover:-translate-y-1 hover:border-amber-300/55">
+                <div className="relative aspect-[5/7] overflow-hidden rounded-md border border-amber-400/35 bg-muted/50 shadow-lg shadow-black/35 transition hover:-translate-y-1 hover:border-amber-300/65">
                   {card.imageUrl ? (
                     <Image
                       src={card.imageUrl}
@@ -95,7 +95,7 @@ function PersonalDeckCard({
                     <p className="truncate text-[11px] font-black text-zinc-100">{card.name}</p>
                   </div>
                 </div>
-                <p className="mt-2 text-center text-base font-black leading-none text-amber-100">
+                <p className="pirate-title mt-2 text-center text-base font-black leading-none">
                   {card.quantity}x
                 </p>
               </div>
@@ -263,10 +263,10 @@ function DeckFormModal({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 p-3 backdrop-blur-sm sm:p-4">
-      <div className="mx-auto flex max-h-[94vh] w-full max-w-7xl flex-col overflow-hidden rounded-md border border-amber-500/35 bg-card/95 shadow-2xl shadow-black/50">
-        <div className="flex items-start justify-between gap-4 border-b border-amber-500/25 bg-slate-950/40 p-4">
+      <div className="pirate-panel mx-auto flex max-h-[94vh] w-full max-w-7xl flex-col overflow-hidden rounded-lg">
+        <div className="flex items-start justify-between gap-4 border-b border-amber-500/25 bg-slate-950/50 p-4">
           <div>
-            <h2 className="text-2xl font-black text-amber-100">{deck ? "Editar deck" : "Criar deck"}</h2>
+            <h2 className="pirate-title text-2xl font-black">{deck ? "Editar deck" : "Criar deck"}</h2>
             <p className="text-sm text-muted-foreground">
               Monte sua tripulacao, defina quantidades e salve em users/{user?.uid}/decks.
             </p>
@@ -276,17 +276,17 @@ function DeckFormModal({
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit} className="grid min-h-0 flex-1 gap-4 overflow-y-auto p-4 lg:grid-cols-[380px_1fr]">
+        <form onSubmit={handleSubmit} className="pirate-scrollbar grid min-h-0 flex-1 gap-4 overflow-y-auto p-4 lg:grid-cols-[380px_1fr]">
           <div className="space-y-4">
             <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="Nome do deck" required />
             <textarea
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              className="min-h-24 w-full rounded-md border border-input bg-slate-950/55 px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:border-amber-300/70 focus-visible:ring-2 focus-visible:ring-ring"
+              className="pirate-input min-h-24 px-3 py-2 text-sm placeholder:text-muted-foreground"
               placeholder="Descricao do deck"
             />
-            <div className="rounded-md border border-amber-500/25 bg-background/45 p-3">
-              <p className="mb-2 text-sm font-semibold">Cores do deck</p>
+            <div className="pirate-parchment rounded-md p-3">
+              <p className="pirate-subtitle mb-2 text-sm">Cores do deck</p>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {DECK_COLORS.map((color) => {
                   const selected = colors.includes(color);
@@ -299,7 +299,7 @@ function DeckFormModal({
                       className={`rounded-md border px-3 py-2 text-sm font-bold transition ${
                         selected
                           ? "border-amber-300/70 bg-amber-500 text-slate-950 shadow-md shadow-amber-950/20"
-                          : "bg-slate-950/55 text-muted-foreground hover:border-amber-300/70 hover:text-amber-100"
+                          : "border-amber-500/25 bg-slate-950/60 text-muted-foreground hover:border-amber-300/70 hover:text-amber-100"
                       }`}
                       aria-pressed={selected}
                     >
@@ -310,8 +310,8 @@ function DeckFormModal({
               </div>
             </div>
 
-            <div className="rounded-md border border-amber-500/25 bg-background/45 p-3">
-              <p className="mb-2 text-sm font-semibold">Buscar cartas</p>
+            <div className="pirate-parchment rounded-md p-3">
+              <p className="pirate-subtitle mb-2 text-sm">Buscar cartas</p>
               <div className="flex gap-2">
                 <Input
                   value={query}
@@ -333,15 +333,15 @@ function DeckFormModal({
 
           <div className="grid gap-4 xl:grid-cols-[1fr_340px]">
             <div className="space-y-3">
-              <h3 className="font-bold">Resultados</h3>
-              <div className="max-h-[34rem] overflow-y-auto pr-1">
+              <h3 className="pirate-title font-bold">Resultados</h3>
+              <div className="pirate-scrollbar max-h-[34rem] overflow-y-auto pr-1">
                 <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
                   {results.map((card) => (
                     <button
                       key={card.id}
                       type="button"
                       onClick={() => addCard(card)}
-                      className="overflow-hidden rounded-md border border-amber-500/20 bg-background/70 text-left transition hover:-translate-y-1 hover:border-amber-300/65"
+                      className="bounty-card overflow-hidden rounded-md text-left transition hover:-translate-y-1 hover:border-amber-300/65"
                     >
                       <div className="relative aspect-[5/7] bg-muted/40">
                         {card.imageUrl ? (
@@ -358,16 +358,16 @@ function DeckFormModal({
               </div>
             </div>
 
-            <div className="space-y-3 rounded-md border border-amber-500/25 bg-background/45 p-3">
-              <h3 className="font-bold">Cartas no deck</h3>
-              <div className="max-h-[34rem] space-y-2 overflow-y-auto pr-1">
+            <div className="pirate-parchment space-y-3 rounded-md p-3">
+              <h3 className="pirate-title font-bold">Cartas no deck</h3>
+              <div className="pirate-scrollbar max-h-[34rem] space-y-2 overflow-y-auto pr-1">
                 {selectedCards.length === 0 ? (
                   <p className="rounded-md border p-4 text-center text-sm text-muted-foreground">
                     Nenhuma carta adicionada ainda.
                   </p>
                 ) : (
                   selectedCards.map((card) => (
-                    <div key={card.cardNumber} className="flex gap-3 rounded-md border border-amber-500/20 bg-card/75 p-2">
+                    <div key={card.cardNumber} className="bounty-card flex gap-3 rounded-md p-2">
                       <div className="relative aspect-[5/7] w-16 shrink-0 overflow-hidden rounded border bg-muted/40">
                         {card.imageUrl ? (
                           <Image src={card.imageUrl} alt={card.name ?? card.cardNumber} fill sizes="64px" className="object-cover" />
@@ -462,9 +462,9 @@ export function PersonalDecks() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-col justify-between gap-4 rounded-md border border-amber-500/25 bg-card/70 p-4 shadow-xl shadow-black/20 sm:flex-row sm:items-center">
+      <div className="pirate-parchment flex flex-col justify-between gap-4 rounded-lg p-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-3xl font-black text-amber-100">Meus decks</h1>
+          <h1 className="pirate-title text-3xl font-black">Meus decks</h1>
           <p className="text-muted-foreground">
             Monte sua frota de decks em users/{user?.uid}/decks.
           </p>
@@ -475,7 +475,7 @@ export function PersonalDecks() {
         </Button>
       </div>
 
-      <div className="grid gap-3 rounded-md border border-amber-500/25 bg-card/80 p-3 md:grid-cols-[1fr_180px]">
+      <div className="pirate-panel grid gap-3 rounded-lg p-3 md:grid-cols-[1fr_180px]">
         <Input placeholder="Buscar deck, leader ou carta" />
         <Input placeholder="Cores" />
       </div>
@@ -483,7 +483,7 @@ export function PersonalDecks() {
       {error ? <p className="rounded-md bg-red-500/15 p-3 text-sm text-red-200">{error}</p> : null}
 
       {!loading && decks.length === 0 ? (
-        <div className="rounded-md border border-amber-500/30 bg-card/85 p-8 text-center shadow-2xl shadow-black/25">
+        <div className="pirate-parchment rounded-lg p-8 text-center">
           <Layers className="mx-auto mb-3 h-8 w-8 text-amber-300" />
           <p className="font-semibold text-amber-100">Voce ainda nao tem nenhum deck no seu navio.</p>
           <p className="mt-2 text-sm text-muted-foreground">

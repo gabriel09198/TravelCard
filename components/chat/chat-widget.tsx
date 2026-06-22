@@ -277,11 +277,11 @@ export function ChatWidget() {
   return (
     <div className="fixed bottom-4 right-4 z-50 flex max-w-[calc(100vw-2rem)] flex-col items-end">
       {open ? (
-        <div className="mb-3 flex h-[min(720px,calc(100vh-6rem))] w-[min(940px,calc(100vw-2rem))] overflow-hidden rounded-md border border-amber-500/35 bg-card shadow-2xl shadow-black/45">
-          <aside className="hidden w-60 shrink-0 border-r border-amber-500/25 bg-slate-950/70 p-3 md:block">
+        <div className="pirate-panel mb-3 flex h-[min(720px,calc(100vh-6rem))] w-[min(980px,calc(100vw-2rem))] overflow-hidden rounded-lg">
+          <aside className="hidden w-64 shrink-0 border-r border-amber-500/25 bg-slate-950/78 p-4 md:block">
             <div className="mb-3 flex items-center justify-between">
               <div>
-                <p className="font-black text-amber-100">Chats</p>
+                <p className="pirate-title font-black">Taverna</p>
                 <p className="text-xs text-muted-foreground">{displayChats.length} disponiveis</p>
               </div>
               <Button type="button" size="icon" variant="ghost" onClick={() => setOpen(false)}>
@@ -291,7 +291,7 @@ export function ChatWidget() {
 
             {(["general", "crew", "private"] as ChatRoomType[]).map((type) => (
               <div key={type} className="mb-4">
-                <p className="mb-2 text-xs font-bold uppercase text-amber-300">
+                <p className="pirate-subtitle mb-2 text-xs">
                   {chatSectionLabels[type]}
                 </p>
                 <div className="space-y-2">
@@ -307,8 +307,8 @@ export function ChatWidget() {
                         className={cn(
                           "flex w-full items-center gap-2 rounded-md border px-3 py-2 text-left text-sm transition",
                           selected
-                            ? "border-amber-300/60 bg-amber-500/15 text-amber-100"
-                            : "border-transparent text-muted-foreground hover:border-amber-500/25 hover:text-foreground"
+                            ? "border-amber-300/70 bg-amber-500/20 text-amber-100 shadow-sm shadow-amber-950/30"
+                            : "border-transparent text-muted-foreground hover:border-amber-500/35 hover:bg-amber-500/10 hover:text-foreground"
                         )}
                       >
                         <Icon className="h-4 w-4 shrink-0" />
@@ -322,9 +322,9 @@ export function ChatWidget() {
           </aside>
 
           <div className="flex min-w-0 flex-1 flex-col">
-            <div className="flex items-center justify-between border-b border-amber-500/25 bg-primary px-4 py-3 text-primary-foreground">
+            <div className="flex items-center justify-between border-b border-amber-500/30 bg-gradient-to-r from-red-700 via-red-600 to-amber-800 px-4 py-3 text-primary-foreground">
               <div className="min-w-0">
-                <p className="truncate font-semibold">{activeChat?.name ?? "Chat"}</p>
+                <p className="truncate font-black">{activeChat?.name ?? "Chat"}</p>
                 <p className="text-xs opacity-85">{messages.length} mensagens</p>
               </div>
               <Button
@@ -338,7 +338,7 @@ export function ChatWidget() {
               </Button>
             </div>
 
-            <div className="flex gap-2 overflow-x-auto border-b border-amber-500/20 bg-slate-950/40 p-2 md:hidden">
+            <div className="pirate-scrollbar flex gap-2 overflow-x-auto border-b border-amber-500/20 bg-slate-950/50 p-2 md:hidden">
               {displayChats.map((chat) => {
                 const Icon = chatTypeIcon(chat.type);
 
@@ -361,9 +361,9 @@ export function ChatWidget() {
               })}
             </div>
 
-            <div className="min-h-0 flex-1 space-y-3 overflow-y-auto bg-muted/35 p-3">
+            <div className="pirate-scrollbar min-h-0 flex-1 space-y-3 overflow-y-auto bg-slate-950/42 p-3">
               {messages.length === 0 ? (
-                <p className="rounded-md bg-background/80 p-3 text-center text-sm text-muted-foreground">
+                <p className="pirate-parchment rounded-md p-3 text-center text-sm text-muted-foreground">
                   Seja o primeiro a mandar mensagem neste chat.
                 </p>
               ) : (
@@ -377,8 +377,10 @@ export function ChatWidget() {
                     >
                       <div
                         className={cn(
-                          "max-w-[82%] rounded-md px-3 py-2 text-sm shadow-sm",
-                          mine ? "bg-primary text-primary-foreground" : "bg-background"
+                          "max-w-[82%] rounded-md border px-3 py-2 text-sm shadow-sm",
+                          mine
+                            ? "border-red-300/25 bg-gradient-to-br from-red-600 to-red-800 text-primary-foreground"
+                            : "border-amber-500/25 bg-background/88 text-foreground"
                         )}
                       >
                         <p className="mb-1 text-[11px] font-semibold opacity-75">
@@ -393,15 +395,15 @@ export function ChatWidget() {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="border-t border-amber-500/20 bg-card p-3">
-              <div className="mb-3 rounded-md border border-amber-500/20 bg-background/35 p-3">
-                <label className="mb-2 block text-xs font-bold text-amber-200">
+            <div className="border-t border-amber-500/25 bg-card/85 p-3">
+              <div className="pirate-parchment mb-3 rounded-md p-3">
+                <label className="pirate-subtitle mb-2 block text-xs">
                   O que voce deseja fazer?
                 </label>
                 <select
                   value={selectedAction}
                   onChange={(event) => setSelectedAction(event.target.value as ChatAction)}
-                  className="h-10 w-full rounded-md border border-input bg-slate-950/55 px-3 py-2 text-sm text-foreground outline-none focus-visible:border-amber-300/70 focus-visible:ring-2 focus-visible:ring-ring"
+                  className="pirate-select px-3 py-2 text-sm"
                 >
                   <option value="">Selecione uma opcao</option>
                   <option value="join-crew">Entrar em tripulacao</option>
@@ -414,7 +416,7 @@ export function ChatWidget() {
                     <select
                       value={joinCrewKey}
                       onChange={(event) => setJoinCrewKey(event.target.value)}
-                      className="h-10 w-full rounded-md border border-input bg-slate-950/55 px-3 py-2 text-sm text-foreground outline-none focus-visible:border-amber-300/70 focus-visible:ring-2 focus-visible:ring-ring"
+                      className="pirate-select px-3 py-2 text-sm"
                     >
                       {crewOptions.map((crew) => (
                         <option key={crew.id} value={crew.id}>
@@ -449,7 +451,7 @@ export function ChatWidget() {
                     <select
                       value={selectedCrewKey}
                       onChange={(event) => setSelectedCrewKey(event.target.value)}
-                      className="h-10 w-full rounded-md border border-input bg-slate-950/55 px-3 py-2 text-sm text-foreground outline-none focus-visible:border-amber-300/70 focus-visible:ring-2 focus-visible:ring-ring"
+                      className="pirate-select px-3 py-2 text-sm"
                     >
                       {crewOptions.map((crew) => (
                         <option key={crew.id} value={crew.id}>
@@ -522,7 +524,7 @@ export function ChatWidget() {
       <Button
         type="button"
         size="icon"
-        className="h-12 w-12 rounded-full shadow-xl"
+        className="h-12 w-12 rounded-full border-2 border-amber-300/55 shadow-xl shadow-red-950/45"
         onClick={() => setOpen((current) => !current)}
         aria-label="Abrir chat"
       >

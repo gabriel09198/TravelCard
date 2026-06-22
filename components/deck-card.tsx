@@ -61,7 +61,7 @@ export function DeckCard({ deck }: { deck: Deck }) {
   );
 
   return (
-    <article className="overflow-hidden rounded-md border border-amber-500/30 bg-slate-950/92 text-white shadow-2xl shadow-black/35">
+    <article className="pirate-panel overflow-hidden rounded-lg text-white">
       <div className="space-y-4 p-3 sm:p-4">
         <div className="flex gap-3">
           <div
@@ -91,7 +91,7 @@ export function DeckCard({ deck }: { deck: Deck }) {
           </div>
 
           <div className="min-w-0 flex-1">
-            <h2 className="text-2xl font-black leading-tight tracking-normal text-zinc-50 sm:text-3xl">
+            <h2 className="pirate-title text-2xl font-black leading-tight tracking-normal sm:text-3xl">
               {deck.name}
             </h2>
             <p className="mt-1 text-sm text-amber-300">
@@ -137,7 +137,7 @@ export function DeckCard({ deck }: { deck: Deck }) {
           </Button>
         </div>
 
-        <div className="max-h-[46rem] overflow-y-auto pr-1">
+        <div className="pirate-scrollbar max-h-[46rem] overflow-y-auto pr-1">
           <div className="grid grid-cols-[repeat(auto-fill,minmax(128px,1fr))] justify-items-center gap-x-4 gap-y-5 sm:grid-cols-[repeat(auto-fill,minmax(142px,1fr))]">
             {deckCards.map((card) => {
               if (!card) return null;
@@ -181,7 +181,7 @@ export function DeckCard({ deck }: { deck: Deck }) {
                       <p className="truncate text-[11px] font-black text-zinc-100">{card.name}</p>
                     </div>
                   </div>
-                  <p className="mt-2 text-center text-base font-black leading-none text-zinc-100">
+                  <p className="pirate-title mt-2 text-center text-base font-black leading-none">
                     {card.deckQuantity}x
                   </p>
                 </div>

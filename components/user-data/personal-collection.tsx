@@ -64,14 +64,15 @@ export function PersonalCollection() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Minha colecao</h1>
+      <div className="pirate-parchment rounded-lg p-5">
+        <p className="pirate-subtitle text-sm">Bau pessoal</p>
+        <h1 className="pirate-title text-3xl font-black">Minha colecao</h1>
         <p className="text-muted-foreground">
           Cartas salvas em users/{user?.uid}/collection.
         </p>
       </div>
 
-      <div className="grid gap-3 rounded-lg border bg-card p-4 md:grid-cols-[1fr_160px_160px_160px]">
+      <div className="pirate-panel grid gap-3 rounded-lg p-4 md:grid-cols-[1fr_160px_160px_160px]">
         <div className="relative">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input className="pl-9" placeholder="Buscar por nome ou codigo" />
@@ -87,8 +88,8 @@ export function PersonalCollection() {
       {error ? <p className="rounded-md bg-red-500/15 p-3 text-sm text-red-200">{error}</p> : null}
 
       {!loading && cards.length === 0 ? (
-        <div className="rounded-md border bg-card p-8 text-center">
-          <p className="font-semibold">Sua colecao ainda esta vazia.</p>
+        <div className="pirate-parchment rounded-lg p-8 text-center">
+          <p className="font-semibold text-amber-100">Seu bau ainda esta vazio.</p>
           <p className="mt-2 text-sm text-muted-foreground">
             Adicione cartas para que elas fiquem vinculadas apenas ao seu UID.
           </p>

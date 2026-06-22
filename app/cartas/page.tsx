@@ -20,8 +20,9 @@ export default async function CardsPage({ searchParams }: CardsPageProps) {
 
     return (
       <div className="space-y-5">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-black text-amber-100">Cartas</h1>
+        <div className="pirate-parchment flex flex-col gap-2 rounded-lg p-5">
+          <p className="pirate-subtitle text-sm">Arquivo de cartas</p>
+          <h1 className="pirate-title text-3xl font-black">Cartas</h1>
           <p className="max-w-3xl text-muted-foreground">
             Pesquise cartas por nome ou codigo e veja efeito, custo, poder,
             raridade e imagem direto da OPTCG API.
@@ -50,7 +51,7 @@ export default async function CardsPage({ searchParams }: CardsPageProps) {
             ))}
           </div>
         ) : (
-          <div className="rounded-md border border-amber-500/30 bg-card/85 p-8 text-center text-muted-foreground">
+          <div className="pirate-parchment rounded-md p-8 text-center text-muted-foreground">
             Nenhuma carta encontrada para essa busca.
           </div>
         )}
@@ -60,7 +61,7 @@ export default async function CardsPage({ searchParams }: CardsPageProps) {
     return (
       <div className="space-y-5">
         <div>
-          <h1 className="text-3xl font-black text-amber-100">Cartas</h1>
+          <h1 className="pirate-title text-3xl font-black">Cartas</h1>
           <p className="text-muted-foreground">Nao foi possivel carregar as cartas agora.</p>
         </div>
         <Suspense>

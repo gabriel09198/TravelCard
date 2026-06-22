@@ -8,9 +8,10 @@ import { posts } from "@/lib/mock-data";
 export default function CommunityPage() {
   return (
     <div className="space-y-6">
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+      <div className="pirate-parchment flex flex-col justify-between gap-4 rounded-lg p-5 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-3xl font-bold">Comunidade</h1>
+          <p className="pirate-subtitle text-sm">Taverna da tripulacao</p>
+          <h1 className="pirate-title text-3xl font-black">Comunidade</h1>
           <p className="text-muted-foreground">Comente sobre cartas, decks, estrategias e trocas.</p>
         </div>
         <Button>
@@ -21,13 +22,13 @@ export default function CommunityPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Criar conversa</CardTitle>
+          <CardTitle className="pirate-title">Criar conversa</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-3">
           <Input placeholder="Titulo do topico" />
           <Input placeholder="Categoria: deck, carta, estrategia ou troca" />
           <textarea
-            className="min-h-28 rounded-md border bg-background/70 px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            className="pirate-input min-h-28 px-3 py-2 text-sm placeholder:text-muted-foreground"
             placeholder="Escreva sua pergunta ou comentario"
           />
         </CardContent>
@@ -39,7 +40,7 @@ export default function CommunityPage() {
             <CardHeader>
               <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                 <div>
-                  <CardTitle className="text-lg">{post.topic}</CardTitle>
+                  <CardTitle className="pirate-title text-lg">{post.topic}</CardTitle>
                   <p className="text-sm text-muted-foreground">
                     {post.author} · {post.createdAt}
                   </p>

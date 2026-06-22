@@ -75,9 +75,9 @@ export function TradeRequestsBoard() {
 
   return (
     <div className="grid gap-5 lg:grid-cols-[380px_1fr]">
-      <Card className="h-fit border-amber-500/35 bg-card/90">
+      <Card className="h-fit">
         <CardHeader>
-          <CardTitle className="text-amber-100">Nova solicitacao</CardTitle>
+          <CardTitle className="pirate-title">Nova solicitacao</CardTitle>
           <p className="text-sm text-muted-foreground">
             Publique uma carta no mural do porto para troca ou venda.
           </p>
@@ -116,7 +116,7 @@ export function TradeRequestsBoard() {
             <textarea
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              className="min-h-28 w-full rounded-md border border-input bg-slate-950/55 px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:border-amber-300/70 focus-visible:ring-2 focus-visible:ring-ring"
+              className="pirate-input min-h-28 px-3 py-2 text-sm placeholder:text-muted-foreground"
               placeholder="Descricao"
               required
             />
@@ -146,7 +146,7 @@ export function TradeRequestsBoard() {
 
       <div className="space-y-4">
         {requests.length === 0 ? (
-          <Card>
+          <Card className="pirate-parchment">
             <CardContent className="flex min-h-52 items-center justify-center text-center text-muted-foreground">
               <div>
                 <RefreshCw className="mx-auto mb-3 h-8 w-8" />
@@ -156,7 +156,7 @@ export function TradeRequestsBoard() {
           </Card>
         ) : (
           requests.map((request) => (
-            <Card key={request.id} className="overflow-hidden border-amber-500/25 bg-card/90">
+            <Card key={request.id} className="bounty-card overflow-hidden">
               <CardHeader>
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                   <div>
@@ -172,7 +172,7 @@ export function TradeRequestsBoard() {
                       </Badge>
                       {request.cardCode ? <Badge>{request.cardCode}</Badge> : null}
                     </div>
-                    <CardTitle className="text-amber-100">{request.cardName}</CardTitle>
+                    <CardTitle className="pirate-title">{request.cardName}</CardTitle>
                   </div>
                   <p className="text-sm text-muted-foreground">
                     {request.createdAt.toLocaleDateString("pt-BR")}

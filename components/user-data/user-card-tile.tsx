@@ -12,18 +12,18 @@ interface UserCardTileProps {
 
 export function UserCardTile({ name, code, imageUrl, quantity, detail }: UserCardTileProps) {
   return (
-    <article className="overflow-hidden rounded-md border border-amber-500/25 bg-card/90 shadow-lg shadow-black/25 transition-all hover:-translate-y-1 hover:border-amber-300/55">
-      <div className="bg-gradient-to-br from-slate-950 to-yellow-950/20 p-3">
+    <article className="bounty-card overflow-hidden rounded-lg transition-all hover:-translate-y-1 hover:border-amber-300/55">
+      <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-yellow-950/30 p-3">
         {imageUrl ? (
           <Image
             src={imageUrl}
             alt={name}
             width={220}
             height={308}
-            className="mx-auto aspect-[5/7] w-full max-w-[150px] rounded-md border border-amber-500/25 object-cover shadow-md shadow-black/30"
+            className="mx-auto aspect-[5/7] w-full max-w-[150px] rounded-md border border-amber-400/35 object-cover shadow-md shadow-black/35"
           />
         ) : (
-          <div className="mx-auto flex aspect-[5/7] w-full max-w-[150px] items-center justify-center rounded-md border border-amber-500/25 bg-background/60 p-3 text-center text-xs text-muted-foreground">
+          <div className="mx-auto flex aspect-[5/7] w-full max-w-[150px] items-center justify-center rounded-md border border-amber-500/25 bg-background/70 p-3 text-center text-xs text-muted-foreground">
             Sem imagem
           </div>
         )}

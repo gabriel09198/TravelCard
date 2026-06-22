@@ -5,8 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 export default function FriendsPage() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Colegas</h1>
+      <div className="pirate-parchment rounded-lg p-5">
+        <p className="pirate-subtitle text-sm">Aliados do porto</p>
+        <h1 className="pirate-title text-3xl font-black">Colegas</h1>
         <p className="text-muted-foreground">
           Area preparada para recursos sociais sem expor decks ou colecoes de outro usuario.
         </p>
@@ -19,7 +20,7 @@ export default function FriendsPage() {
               <Users className="h-5 w-5" />
             </div>
             <div>
-              <CardTitle className="text-amber-100">Privacidade ativada</CardTitle>
+              <CardTitle className="pirate-title">Privacidade ativada</CardTitle>
               <p className="text-sm text-muted-foreground">
                 Decks, colecao e desejos agora carregam somente do UID autenticado.
               </p>
