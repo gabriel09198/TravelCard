@@ -127,3 +127,14 @@ export interface ChatMessage {
   userEmail: string;
   createdAt: Date;
 }
+
+export type ChatRoomType = "general" | "crew" | "private";
+
+export interface ChatRoom {
+  id: string;
+  type: ChatRoomType;
+  name: string;
+  createdBy: string;
+  members: string[];
+  createdAt?: Date;
+}
