@@ -3,7 +3,6 @@ import {
   arrayUnion,
   collection,
   doc,
-  getDoc,
   limit,
   onSnapshot,
   query,
@@ -18,7 +17,28 @@ import { firestore } from "@/lib/firebase";
 import type { ChatMessage, ChatRoom, ChatRoomType } from "@/types/onePieceCard";
 
 const CHATS_COLLECTION = "chats";
+const CREW_DIRECTORY_COLLECTION = "crewDirectory";
 const GENERAL_CHAT_ID = "general";
+
+export const STANDARD_CREWS = [
+  "Chapeus de Palha",
+  "Piratas do Ruivo",
+  "Piratas Heart",
+  "Piratas Kid",
+  "Baroque Works",
+  "Marinha",
+  "Governo Mundial",
+  "Revolucionarios",
+  "Cross Guild",
+  "Piratas Donquixote",
+  "Big Mom",
+  "Kaido"
+] as const;
+
+export interface CrewOption {
+  id: string;
+  name: string;
+}
 
 export interface SendChatMessageInput {
   text: string;
@@ -31,6 +51,7 @@ export interface CreateCrewChatInput {
   name: string;
   password: string;
   userId: string;
+  crewKey: string;
 }
 
 export interface CreatePrivateChatInput {
@@ -41,6 +62,10 @@ export interface CreatePrivateChatInput {
 
 function chatDocument(chatId: string) {
   return doc(firestore, CHATS_COLLECTION, chatId);
+}
+
+function crewDirectoryDocument(crewKey: string) {
+  return doc(firestore, CREW_DIRECTORY_COLLECTION, crewKey);
 }
 
 function messagesCollection(chatId: string) {
@@ -58,9 +83,18 @@ function normalizeChat(documentId: string, data: Record<string, unknown>): ChatR
   };
 }
 
-async function hashCrewPassword(password: string): Promise<string> {
+export function normalizeCrewKey(name: string): string {
+  return name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+async function hashCrewPassword(crewKey: string, password: string): Promise<string> {
   const encoder = new TextEncoder();
-  const bytes = encoder.encode(`travelcard-crew:${password.trim()}`);
+  const bytes = encoder.encode(`travelcard-crew:${crewKey}:${password.trim()}`);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
 
   return Array.from(new Uint8Array(digest))
@@ -68,25 +102,61 @@ async function hashCrewPassword(password: string): Promise<string> {
     .join("");
 }
 
-async function crewChatId(password: string): Promise<string> {
-  return `crew_${await hashCrewPassword(password)}`;
+async function crewChatId(crewKey: string, password: string): Promise<string> {
+  const passwordHash = await hashCrewPassword(crewKey, password);
+
+  return `crew_${crewKey}_${passwordHash.slice(0, 16)}`;
 }
 
 export async function ensureGeneralChat(userId: string): Promise<void> {
-  const generalRef = chatDocument(GENERAL_CHAT_ID);
-  const snapshot = await getDoc(generalRef);
+  await setDoc(
+    chatDocument(GENERAL_CHAT_ID),
+    {
+      type: "general",
+      name: "Chat Geral",
+      createdBy: userId,
+      members: [],
+      visibleTo: [],
+      updatedAt: serverTimestamp(),
+      createdAt: serverTimestamp()
+    },
+    { merge: true }
+  );
+}
 
-  if (snapshot.exists()) {
-    return;
-  }
+export function subscribeToCrewDirectory(
+  onChange: (crews: CrewOption[]) => void,
+  onError?: (error: Error) => void
+) {
+  return onSnapshot(
+    collection(firestore, CREW_DIRECTORY_COLLECTION),
+    (snapshot) => {
+      const firestoreCrews = snapshot.docs.map((documentSnapshot) => {
+        const data = documentSnapshot.data();
 
-  await setDoc(generalRef, {
-    type: "general",
-    name: "Chat Geral",
-    createdBy: userId,
-    members: [],
-    createdAt: serverTimestamp()
-  });
+        return {
+          id: documentSnapshot.id,
+          name: data.name as string
+        };
+      });
+
+      const crewMap = new Map<string, CrewOption>();
+
+      STANDARD_CREWS.forEach((name) => {
+        crewMap.set(normalizeCrewKey(name), {
+          id: normalizeCrewKey(name),
+          name
+        });
+      });
+
+      firestoreCrews.forEach((crew) => {
+        crewMap.set(crew.id, crew);
+      });
+
+      onChange(Array.from(crewMap.values()).sort((a, b) => a.name.localeCompare(b.name)));
+    },
+    onError
+  );
 }
 
 export function subscribeToAvailableChats(
@@ -145,8 +215,9 @@ export function subscribeToAvailableChats(
 }
 
 export async function createCrewChat(input: CreateCrewChatInput): Promise<string> {
-  const passwordHash = await hashCrewPassword(input.password);
-  const chatId = await crewChatId(input.password);
+  const crewKey = input.crewKey || normalizeCrewKey(input.name);
+  const passwordHash = await hashCrewPassword(crewKey, input.password);
+  const chatId = await crewChatId(crewKey, input.password);
 
   await setDoc(chatDocument(chatId), {
     type: "crew",
@@ -154,18 +225,31 @@ export async function createCrewChat(input: CreateCrewChatInput): Promise<string
     createdBy: input.userId,
     members: [input.userId],
     visibleTo: [input.userId],
+    crewKey,
     crewPasswordHash: passwordHash,
     createdAt: serverTimestamp()
   });
 
+  await setDoc(
+    crewDirectoryDocument(crewKey),
+    {
+      name: input.name.trim(),
+      crewKey,
+      createdBy: input.userId,
+      createdAt: serverTimestamp()
+    },
+    { merge: true }
+  );
+
   return chatId;
 }
 
-export async function joinCrewChat(userId: string, password: string): Promise<string> {
-  const passwordHash = await hashCrewPassword(password);
-  const chatId = await crewChatId(password);
+export async function joinCrewChat(userId: string, crewKey: string, password: string): Promise<string> {
+  const passwordHash = await hashCrewPassword(crewKey, password);
+  const chatId = await crewChatId(crewKey, password);
 
   await updateDoc(chatDocument(chatId), {
+    crewKey,
     crewPasswordHash: passwordHash,
     members: arrayUnion(userId),
     visibleTo: arrayUnion(userId)
@@ -194,6 +278,10 @@ export async function sendChatMessage(
   chatId: string,
   input: SendChatMessageInput
 ): Promise<void> {
+  if (chatId === GENERAL_CHAT_ID) {
+    await ensureGeneralChat(input.userId);
+  }
+
   await addDoc(messagesCollection(chatId), {
     ...input,
     createdAt: serverTimestamp()

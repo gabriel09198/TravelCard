@@ -19,10 +19,13 @@ import {
   createPrivateChat,
   ensureGeneralChat,
   joinCrewChat,
+  normalizeCrewKey,
   sendChatMessage,
   subscribeToAvailableChats,
+  subscribeToCrewDirectory,
   subscribeToChatMessages
 } from "@/services/chatMessagesService";
+import type { CrewOption } from "@/services/chatMessagesService";
 import type { ChatMessage, ChatRoom, ChatRoomType } from "@/types/onePieceCard";
 import { cn } from "@/lib/utils";
 
@@ -45,8 +48,12 @@ export function ChatWidget() {
   const [activeChatId, setActiveChatId] = useState("general");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [text, setText] = useState("");
-  const [crewName, setCrewName] = useState("");
+  const [crewOptions, setCrewOptions] = useState<CrewOption[]>([]);
+  const [selectedCrewKey, setSelectedCrewKey] = useState("");
+  const [customCrewName, setCustomCrewName] = useState("");
   const [crewPassword, setCrewPassword] = useState("");
+  const [joinCrewKey, setJoinCrewKey] = useState("");
+  const [joinCustomCrewName, setJoinCustomCrewName] = useState("");
   const [joinPassword, setJoinPassword] = useState("");
   const [privateName, setPrivateName] = useState("");
   const [privateMembers, setPrivateMembers] = useState("");
@@ -105,6 +112,24 @@ export function ChatWidget() {
   }, [user]);
 
   useEffect(() => {
+    if (!user) {
+      setCrewOptions([]);
+      return undefined;
+    }
+
+    return subscribeToCrewDirectory(
+      (items) => {
+        setCrewOptions(items);
+        setSelectedCrewKey((current) => current || items[0]?.id || "other");
+        setJoinCrewKey((current) => current || items[0]?.id || "other");
+      },
+      (directoryError) => {
+        console.error("Nao foi possivel carregar tripulacoes.", directoryError);
+      }
+    );
+  }, [user]);
+
+  useEffect(() => {
     if (!user || !activeChat) {
       setMessages([]);
       return undefined;
@@ -146,7 +171,7 @@ export function ChatWidget() {
         userEmail: user.email ?? ""
       });
     } catch (sendError) {
-      console.error("Nao foi possivel enviar a mensagem.", sendError);
+      console.error("Erro ao enviar mensagem:", sendError);
       setError("Nao foi possivel enviar a mensagem.");
       setText(trimmedText);
     }
@@ -154,7 +179,16 @@ export function ChatWidget() {
 
   async function handleCreateCrew(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!user || !crewName.trim() || !crewPassword.trim()) return;
+    if (!user || !crewPassword.trim()) return;
+
+    const selectedCrew = crewOptions.find((crew) => crew.id === selectedCrewKey);
+    const crewName = selectedCrewKey === "other" ? customCrewName.trim() : selectedCrew?.name ?? "";
+    const crewKey = selectedCrewKey === "other" ? normalizeCrewKey(crewName) : selectedCrewKey;
+
+    if (!crewName || !crewKey) {
+      setError("Escolha ou informe o nome da tripulacao.");
+      return;
+    }
 
     setBusy(true);
     setError("");
@@ -163,9 +197,10 @@ export function ChatWidget() {
       const chatId = await createCrewChat({
         name: crewName,
         password: crewPassword,
-        userId: user.uid
+        userId: user.uid,
+        crewKey
       });
-      setCrewName("");
+      setCustomCrewName("");
       setCrewPassword("");
       setActiveChatId(chatId);
     } catch (createError) {
@@ -180,12 +215,22 @@ export function ChatWidget() {
     event.preventDefault();
     if (!user || !joinPassword.trim()) return;
 
+    const selectedCrew = crewOptions.find((crew) => crew.id === joinCrewKey);
+    const crewName = joinCrewKey === "other" ? joinCustomCrewName.trim() : selectedCrew?.name ?? "";
+    const crewKey = joinCrewKey === "other" ? normalizeCrewKey(crewName) : joinCrewKey;
+
+    if (!crewKey) {
+      setError("Escolha uma tripulacao para entrar.");
+      return;
+    }
+
     setBusy(true);
     setError("");
 
     try {
-      const chatId = await joinCrewChat(user.uid, joinPassword);
+      const chatId = await joinCrewChat(user.uid, crewKey, joinPassword);
       setJoinPassword("");
+      setJoinCustomCrewName("");
       setActiveChatId(chatId);
     } catch (joinError) {
       console.error("Codigo de tripulacao invalido ou sem permissao.", joinError);
@@ -345,7 +390,28 @@ export function ChatWidget() {
                   className="rounded-md border border-amber-500/20 bg-background/35 p-2"
                 >
                   <p className="mb-2 text-xs font-bold text-amber-200">Entrar em tripulacao</p>
-                  <div className="flex gap-2">
+                  <div className="grid gap-2">
+                    <select
+                      value={joinCrewKey}
+                      onChange={(event) => setJoinCrewKey(event.target.value)}
+                      className="h-10 w-full rounded-md border border-input bg-slate-950/55 px-3 py-2 text-sm text-foreground outline-none focus-visible:border-amber-300/70 focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      {crewOptions.map((crew) => (
+                        <option key={crew.id} value={crew.id}>
+                          {crew.name}
+                        </option>
+                      ))}
+                      <option value="other">Outra</option>
+                    </select>
+                    {joinCrewKey === "other" ? (
+                      <Input
+                        value={joinCustomCrewName}
+                        onChange={(event) => setJoinCustomCrewName(event.target.value)}
+                        placeholder="Nome da tripulacao"
+                      />
+                    ) : null}
+                  </div>
+                  <div className="mt-2 flex gap-2">
                     <Input
                       value={joinPassword}
                       onChange={(event) => setJoinPassword(event.target.value)}
@@ -363,13 +429,28 @@ export function ChatWidget() {
                   className="rounded-md border border-amber-500/20 bg-background/35 p-2"
                 >
                   <p className="mb-2 text-xs font-bold text-amber-200">Criar tripulacao</p>
-                  <div className="grid gap-2 sm:grid-cols-[1fr_0.8fr_auto] xl:grid-cols-1 2xl:grid-cols-[1fr_0.8fr_auto]">
-                    <Input
-                      value={crewName}
-                      onChange={(event) => setCrewName(event.target.value)}
-                      placeholder="Nome da tripulacao"
-                      className="min-w-0"
-                    />
+                  <div className="grid gap-2">
+                    <select
+                      value={selectedCrewKey}
+                      onChange={(event) => setSelectedCrewKey(event.target.value)}
+                      className="h-10 w-full rounded-md border border-input bg-slate-950/55 px-3 py-2 text-sm text-foreground outline-none focus-visible:border-amber-300/70 focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      {crewOptions.map((crew) => (
+                        <option key={crew.id} value={crew.id}>
+                          {crew.name}
+                        </option>
+                      ))}
+                      <option value="other">Outra</option>
+                    </select>
+                    {selectedCrewKey === "other" ? (
+                      <Input
+                        value={customCrewName}
+                        onChange={(event) => setCustomCrewName(event.target.value)}
+                        placeholder="Nome personalizado"
+                      />
+                    ) : null}
+                  </div>
+                  <div className="mt-2 flex gap-2">
                     <Input
                       value={crewPassword}
                       onChange={(event) => setCrewPassword(event.target.value)}

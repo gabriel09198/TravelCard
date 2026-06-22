@@ -34,9 +34,18 @@ service cloud.firestore {
         && request.resource.data.userId == request.auth.uid;
     }
 
+    match /crewDirectory/{crewId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+        && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if request.auth != null
+        && resource.data.createdBy == request.auth.uid;
+    }
+
     match /chats/{chatId} {
       allow read: if request.auth != null
         && (
+          chatId == "general" ||
           resource.data.type == "general" ||
           request.auth.uid in resource.data.members ||
           request.auth.uid in resource.data.visibleTo
@@ -55,6 +64,7 @@ service cloud.firestore {
 
       allow update: if request.auth != null
         && (
+          (chatId == "general" && request.resource.data.type == "general") ||
           request.auth.uid == resource.data.createdBy ||
           (
             resource.data.type == "crew" &&
@@ -72,6 +82,7 @@ service cloud.firestore {
       match /messages/{messageId} {
         allow read: if request.auth != null
           && (
+            chatId == "general" ||
             get(/databases/$(database)/documents/chats/$(chatId)).data.type == "general" ||
             request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.members ||
             request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.visibleTo
@@ -80,6 +91,7 @@ service cloud.firestore {
         allow create: if request.auth != null
           && request.resource.data.userId == request.auth.uid
           && (
+            chatId == "general" ||
             get(/databases/$(database)/documents/chats/$(chatId)).data.type == "general" ||
             request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.members ||
             request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.visibleTo
