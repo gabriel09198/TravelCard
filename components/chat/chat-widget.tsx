@@ -54,9 +54,24 @@ export function ChatWidget() {
   const [busy, setBusy] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  const displayChats = useMemo<ChatRoom[]>(
+    () =>
+      chats.length > 0
+        ? chats
+        : [
+            {
+              id: "general",
+              type: "general",
+              name: "Chat Geral",
+              createdBy: "",
+              members: []
+            }
+          ],
+    [chats]
+  );
   const activeChat = useMemo(
-    () => chats.find((chat) => chat.id === activeChatId) ?? chats[0],
-    [activeChatId, chats]
+    () => displayChats.find((chat) => chat.id === activeChatId) ?? displayChats[0],
+    [activeChatId, displayChats]
   );
 
   useEffect(() => {
@@ -205,14 +220,14 @@ export function ChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-4 right-4 z-50 flex max-w-[calc(100vw-2rem)] flex-col items-end">
       {open ? (
-        <div className="mb-3 flex h-[min(720px,calc(100vh-6rem))] w-[calc(100vw-2rem)] max-w-4xl overflow-hidden rounded-md border border-amber-500/35 bg-card shadow-2xl shadow-black/45">
-          <aside className="hidden w-64 shrink-0 border-r border-amber-500/25 bg-slate-950/70 p-3 md:block">
+        <div className="mb-3 flex h-[min(720px,calc(100vh-6rem))] w-[min(940px,calc(100vw-2rem))] overflow-hidden rounded-md border border-amber-500/35 bg-card shadow-2xl shadow-black/45">
+          <aside className="hidden w-60 shrink-0 border-r border-amber-500/25 bg-slate-950/70 p-3 md:block">
             <div className="mb-3 flex items-center justify-between">
               <div>
                 <p className="font-black text-amber-100">Chats</p>
-                <p className="text-xs text-muted-foreground">{chats.length} disponiveis</p>
+                <p className="text-xs text-muted-foreground">{displayChats.length} disponiveis</p>
               </div>
               <Button type="button" size="icon" variant="ghost" onClick={() => setOpen(false)}>
                 <X className="h-4 w-4" />
@@ -225,7 +240,7 @@ export function ChatWidget() {
                   {chatSectionLabels[type]}
                 </p>
                 <div className="space-y-2">
-                  {chats.filter((chat) => chat.type === type).map((chat) => {
+                  {displayChats.filter((chat) => chat.type === type).map((chat) => {
                     const Icon = chatTypeIcon(chat.type);
                     const selected = chat.id === activeChat?.id;
 
@@ -269,7 +284,7 @@ export function ChatWidget() {
             </div>
 
             <div className="flex gap-2 overflow-x-auto border-b border-amber-500/20 bg-slate-950/40 p-2 md:hidden">
-              {chats.map((chat) => {
+              {displayChats.map((chat) => {
                 const Icon = chatTypeIcon(chat.type);
 
                 return (
@@ -324,48 +339,71 @@ export function ChatWidget() {
             </div>
 
             <div className="border-t border-amber-500/20 bg-card p-3">
-              <div className="mb-3 grid gap-2 lg:grid-cols-3">
-                <form onSubmit={handleJoinCrew} className="flex gap-2">
-                  <Input
-                    value={joinPassword}
-                    onChange={(event) => setJoinPassword(event.target.value)}
-                    placeholder="Codigo da tripulacao"
-                    type="password"
-                  />
-                  <Button type="submit" size="icon" variant="outline" disabled={busy}>
-                    <LockKeyhole className="h-4 w-4" />
-                  </Button>
+              <div className="mb-3 grid gap-3 xl:grid-cols-3">
+                <form
+                  onSubmit={handleJoinCrew}
+                  className="rounded-md border border-amber-500/20 bg-background/35 p-2"
+                >
+                  <p className="mb-2 text-xs font-bold text-amber-200">Entrar em tripulacao</p>
+                  <div className="flex gap-2">
+                    <Input
+                      value={joinPassword}
+                      onChange={(event) => setJoinPassword(event.target.value)}
+                      placeholder="Codigo da tripulacao"
+                      type="password"
+                      className="min-w-0"
+                    />
+                    <Button type="submit" size="icon" variant="outline" disabled={busy} aria-label="Entrar">
+                      <LockKeyhole className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </form>
-                <form onSubmit={handleCreateCrew} className="flex gap-2">
-                  <Input
-                    value={crewName}
-                    onChange={(event) => setCrewName(event.target.value)}
-                    placeholder="Nova tripulacao"
-                  />
-                  <Input
-                    value={crewPassword}
-                    onChange={(event) => setCrewPassword(event.target.value)}
-                    placeholder="Codigo"
-                    type="password"
-                  />
-                  <Button type="submit" size="icon" variant="outline" disabled={busy}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
+                <form
+                  onSubmit={handleCreateCrew}
+                  className="rounded-md border border-amber-500/20 bg-background/35 p-2"
+                >
+                  <p className="mb-2 text-xs font-bold text-amber-200">Criar tripulacao</p>
+                  <div className="grid gap-2 sm:grid-cols-[1fr_0.8fr_auto] xl:grid-cols-1 2xl:grid-cols-[1fr_0.8fr_auto]">
+                    <Input
+                      value={crewName}
+                      onChange={(event) => setCrewName(event.target.value)}
+                      placeholder="Nome da tripulacao"
+                      className="min-w-0"
+                    />
+                    <Input
+                      value={crewPassword}
+                      onChange={(event) => setCrewPassword(event.target.value)}
+                      placeholder="Codigo"
+                      type="password"
+                      className="min-w-0"
+                    />
+                    <Button type="submit" size="icon" variant="outline" disabled={busy} aria-label="Criar tripulacao">
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </form>
-                <form onSubmit={handleCreatePrivate} className="flex gap-2">
-                  <Input
-                    value={privateName}
-                    onChange={(event) => setPrivateName(event.target.value)}
-                    placeholder="Grupo privado"
-                  />
-                  <Input
-                    value={privateMembers}
-                    onChange={(event) => setPrivateMembers(event.target.value)}
-                    placeholder="UIDs separados por virgula"
-                  />
-                  <Button type="submit" size="icon" variant="outline" disabled={busy}>
-                    <Users className="h-4 w-4" />
-                  </Button>
+                <form
+                  onSubmit={handleCreatePrivate}
+                  className="rounded-md border border-amber-500/20 bg-background/35 p-2"
+                >
+                  <p className="mb-2 text-xs font-bold text-amber-200">Criar grupo privado</p>
+                  <div className="grid gap-2 sm:grid-cols-[0.8fr_1fr_auto] xl:grid-cols-1 2xl:grid-cols-[0.8fr_1fr_auto]">
+                    <Input
+                      value={privateName}
+                      onChange={(event) => setPrivateName(event.target.value)}
+                      placeholder="Nome do grupo"
+                      className="min-w-0"
+                    />
+                    <Input
+                      value={privateMembers}
+                      onChange={(event) => setPrivateMembers(event.target.value)}
+                      placeholder="UIDs separados por virgula"
+                      className="min-w-0"
+                    />
+                    <Button type="submit" size="icon" variant="outline" disabled={busy} aria-label="Criar grupo">
+                      <Users className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </form>
               </div>
 
