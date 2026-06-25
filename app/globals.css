@@ -350,7 +350,7 @@ body {
 
 .pirate-ocean {
   bottom: 0;
-  height: 31%;
+  height: 23%;
   left: 0;
   overflow: hidden;
   position: absolute;
@@ -358,44 +358,46 @@ body {
   z-index: 1;
 }
 
-.pirate-wave {
-  --pirate-wave-scale: 1;
-  animation: pirate-wave-travel calc(22s / var(--pirate-motion-speed)) linear infinite;
-  background:
-    radial-gradient(ellipse at 50% 0, transparent 54%, rgb(14 116 144 / 0.38) 56% 60%, transparent 62%)
-      0 0 / 150px 58px repeat-x,
-    linear-gradient(180deg, rgb(8 47 73 / 0.18), rgb(2 12 27 / 0.94));
-  bottom: -13%;
-  height: 104%;
-  left: -180px;
+.pirate-sea-layer {
+  bottom: 0;
+  height: 100%;
+  left: -3%;
   position: absolute;
-  transform: translate3d(0, 0, 0) scaleY(var(--pirate-wave-scale));
-  transform-origin: bottom;
-  width: calc(100% + 360px);
+  width: 106%;
 }
 
-.pirate-wave-back {
-  --pirate-wave-scale: 0.62;
-  bottom: 24%;
-  opacity: 0.42;
+.pirate-sea-back {
+  bottom: 12%;
+  filter: blur(2px);
+  opacity: 0.5;
 }
 
-.pirate-wave-middle {
-  animation-direction: reverse;
-  animation-duration: calc(31s / var(--pirate-motion-speed));
-  background-size: 190px 68px, auto;
-  bottom: 3%;
+.pirate-sea-middle {
+  bottom: 2%;
+  filter: blur(1px);
   opacity: 0.62;
 }
 
-.pirate-wave-front {
-  animation-duration: calc(17s / var(--pirate-motion-speed));
+.pirate-sea-front {
+  bottom: -9%;
+  opacity: 0.7;
+}
+
+.pirate-sea-glimmer {
   background:
-    radial-gradient(ellipse at 50% 0, transparent 52%, rgb(14 116 144 / 0.48) 54% 58%, rgb(125 211 252 / 0.11) 59%, transparent 62%)
-      0 0 / 220px 78px repeat-x,
-    linear-gradient(180deg, rgb(8 47 73 / 0.3), rgb(2 6 23 / 0.98));
-  bottom: -31%;
-  opacity: 0.78;
+    linear-gradient(90deg, transparent, rgb(125 211 252 / 0.16), transparent) 12% 28% / 19% 1px no-repeat,
+    linear-gradient(90deg, transparent, rgb(251 191 36 / 0.1), transparent) 66% 45% / 13% 1px no-repeat,
+    linear-gradient(90deg, transparent, rgb(186 230 253 / 0.1), transparent) 40% 62% / 24% 1px no-repeat;
+  inset: 0 -8%;
+  position: absolute;
+}
+
+.pirate-sea-depth {
+  background:
+    linear-gradient(180deg, transparent 0%, rgb(2 12 27 / 0.3) 38%, rgb(2 6 23 / 0.96) 100%),
+    radial-gradient(ellipse at 50% 5%, rgb(14 116 144 / 0.08), transparent 62%);
+  inset: 0;
+  position: absolute;
 }
 
 .pirate-vignette {
@@ -417,12 +419,6 @@ body {
 @keyframes pirate-stars-drift {
   to {
     background-position: 124px 17px, -78px 51px, 134px 91px;
-  }
-}
-
-@keyframes pirate-wave-travel {
-  to {
-    transform: translate3d(180px, 0, 0) scaleY(var(--pirate-wave-scale));
   }
 }
 
@@ -491,19 +487,7 @@ body {
   }
 
   .pirate-ocean {
-    height: 29%;
-  }
-
-  .pirate-wave {
-    background-size: 126px 52px, auto;
-  }
-
-  .pirate-wave-middle {
-    background-size: 158px 60px, auto;
-  }
-
-  .pirate-wave-front {
-    background-size: 184px 68px, auto;
+    height: 22%;
   }
 
   .pirate-readability-layer {
@@ -621,19 +605,25 @@ body {
   }
 
   .pirate-ocean {
-    height: 28%;
+    height: 20%;
   }
 
-  .pirate-wave-back {
-    bottom: 17%;
+  .pirate-sea-back {
+    bottom: 8%;
+    opacity: 0.38;
   }
 
-  .pirate-wave-middle {
-    bottom: -2%;
+  .pirate-sea-middle {
+    opacity: 0.48;
   }
 
-  .pirate-wave-front {
-    bottom: -35%;
+  .pirate-sea-front {
+    bottom: -12%;
+    opacity: 0.55;
+  }
+
+  .pirate-sea-glimmer {
+    opacity: 0.55;
   }
 
   .pirate-vignette {
@@ -670,7 +660,7 @@ body {
   }
 
   .pirate-ocean {
-    height: 26%;
+    height: 19%;
   }
 }
 
@@ -704,7 +694,7 @@ body {
   }
 
   .pirate-ocean {
-    height: 31%;
+    height: 24%;
   }
 
   .pirate-fog {

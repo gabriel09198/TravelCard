@@ -47,6 +47,112 @@ function PirateCompass({
   );
 }
 
+function PirateOcean({ reduceMotion }: { reduceMotion: boolean }) {
+  const waveTransition = {
+    duration: 18,
+    ease: "easeInOut" as const,
+    repeat: Infinity,
+    repeatType: "mirror" as const
+  };
+
+  return (
+    <div className="pirate-ocean">
+      <svg
+        className="pirate-sea-layer pirate-sea-back"
+        viewBox="0 0 1600 280"
+        preserveAspectRatio="none"
+      >
+        <defs>
+          <linearGradient id="pirate-sea-back-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#155e75" stopOpacity="0.16" />
+            <stop offset="100%" stopColor="#020617" stopOpacity="0.78" />
+          </linearGradient>
+        </defs>
+        <motion.path
+          fill="url(#pirate-sea-back-gradient)"
+          animate={
+            reduceMotion
+              ? undefined
+              : {
+                  d: [
+                    "M0 92 C150 62 260 118 420 88 C590 56 720 112 890 82 C1070 50 1210 109 1380 76 C1470 59 1540 65 1600 78 L1600 280 L0 280 Z",
+                    "M0 82 C145 112 280 58 430 91 C600 124 725 61 900 94 C1070 126 1210 62 1380 91 C1470 106 1540 97 1600 84 L1600 280 L0 280 Z"
+                  ]
+                }
+          }
+          transition={{ ...waveTransition, duration: 26 }}
+          d="M0 92 C150 62 260 118 420 88 C590 56 720 112 890 82 C1070 50 1210 109 1380 76 C1470 59 1540 65 1600 78 L1600 280 L0 280 Z"
+        />
+      </svg>
+
+      <svg
+        className="pirate-sea-layer pirate-sea-middle"
+        viewBox="0 0 1600 280"
+        preserveAspectRatio="none"
+      >
+        <defs>
+          <linearGradient id="pirate-sea-middle-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#0e7490" stopOpacity="0.18" />
+            <stop offset="45%" stopColor="#083344" stopOpacity="0.34" />
+            <stop offset="100%" stopColor="#020617" stopOpacity="0.9" />
+          </linearGradient>
+        </defs>
+        <motion.path
+          fill="url(#pirate-sea-middle-gradient)"
+          animate={
+            reduceMotion
+              ? undefined
+              : {
+                  d: [
+                    "M0 116 C125 80 250 139 390 108 C535 76 670 135 820 103 C985 68 1110 132 1265 105 C1400 82 1510 91 1600 111 L1600 280 L0 280 Z",
+                    "M0 106 C130 137 255 79 400 112 C545 144 680 82 830 114 C990 148 1125 83 1280 111 C1410 135 1515 125 1600 104 L1600 280 L0 280 Z"
+                  ]
+                }
+          }
+          transition={{ ...waveTransition, duration: 20 }}
+          d="M0 116 C125 80 250 139 390 108 C535 76 670 135 820 103 C985 68 1110 132 1265 105 C1400 82 1510 91 1600 111 L1600 280 L0 280 Z"
+        />
+      </svg>
+
+      <svg
+        className="pirate-sea-layer pirate-sea-front"
+        viewBox="0 0 1600 280"
+        preserveAspectRatio="none"
+      >
+        <defs>
+          <linearGradient id="pirate-sea-front-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#0891b2" stopOpacity="0.12" />
+            <stop offset="32%" stopColor="#164e63" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="#020617" stopOpacity="0.98" />
+          </linearGradient>
+        </defs>
+        <motion.path
+          fill="url(#pirate-sea-front-gradient)"
+          animate={
+            reduceMotion
+              ? undefined
+              : {
+                  d: [
+                    "M0 148 C115 117 230 169 360 142 C505 111 625 171 770 139 C915 108 1045 167 1190 141 C1325 116 1460 121 1600 151 L1600 280 L0 280 Z",
+                    "M0 140 C120 169 240 115 370 146 C510 179 640 117 780 149 C925 181 1055 119 1200 146 C1335 171 1470 165 1600 139 L1600 280 L0 280 Z"
+                  ]
+                }
+          }
+          transition={{ ...waveTransition, duration: 16 }}
+          d="M0 148 C115 117 230 169 360 142 C505 111 625 171 770 139 C915 108 1045 167 1190 141 C1325 116 1460 121 1600 151 L1600 280 L0 280 Z"
+        />
+      </svg>
+
+      <motion.div
+        className="pirate-sea-glimmer"
+        animate={reduceMotion ? undefined : { x: ["-4%", "5%"], opacity: [0.12, 0.22, 0.12] }}
+        transition={{ duration: 24, ease: "easeInOut", repeat: Infinity }}
+      />
+      <div className="pirate-sea-depth" />
+    </div>
+  );
+}
+
 export function PirateBackground() {
   const reduceMotion = useReducedMotion();
 
@@ -154,11 +260,7 @@ export function PirateBackground() {
       <div className="pirate-island pirate-island-left" />
       <div className="pirate-island pirate-island-right" />
 
-      <div className="pirate-ocean">
-        <div className="pirate-wave pirate-wave-back" />
-        <div className="pirate-wave pirate-wave-middle" />
-        <div className="pirate-wave pirate-wave-front" />
-      </div>
+      <PirateOcean reduceMotion={Boolean(reduceMotion)} />
 
       <div className="pirate-vignette" />
       <div className="pirate-readability-layer" />
