@@ -8,7 +8,10 @@ const CARD_ENDPOINTS = [
   "/api/allDonCards/"
 ] as const;
 
-const OPTIONAL_CARD_ENDPOINTS = ["/api/allPromoCards/"] as const;
+const CARD_CACHE_TTL = 1000 * 60 * 60 * 12;
+
+let cachedCards: OnePieceCard[] | null = null;
+let cardCacheExpiresAt = 0;
 
 function parseNullableNumber(value: string | number | null | undefined): number | null {
   if (value === null || value === undefined || value === "NULL") {
@@ -54,12 +57,10 @@ function normalizeCard(card: OnePieceCardApiCard): OnePieceCard {
   };
 }
 
-async function fetchCardEndpoint(
-  endpoint: (typeof CARD_ENDPOINTS)[number] | (typeof OPTIONAL_CARD_ENDPOINTS)[number]
-): Promise<OnePieceCard[]> {
+async function fetchCardEndpoint(endpoint: (typeof CARD_ENDPOINTS)[number]): Promise<OnePieceCard[]> {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     signal: AbortSignal.timeout(12000),
-    next: { revalidate: 60 * 60 * 12 }
+    cache: "no-store"
   });
 
   if (!response.ok) {
@@ -71,20 +72,36 @@ async function fetchCardEndpoint(
 }
 
 export async function getOnePieceCards(): Promise<OnePieceCard[]> {
+  if (cachedCards && Date.now() < cardCacheExpiresAt) {
+    return cachedCards;
+  }
+
   try {
-    const requiredResults = await Promise.all(CARD_ENDPOINTS.map(fetchCardEndpoint));
-    const optionalResults = await Promise.allSettled(OPTIONAL_CARD_ENDPOINTS.map(fetchCardEndpoint));
-    const optionalCards = optionalResults.flatMap((result) =>
+    const endpointResults = await Promise.allSettled(CARD_ENDPOINTS.map(fetchCardEndpoint));
+    const cards = endpointResults.flatMap((result) =>
       result.status === "fulfilled" ? result.value : []
     );
-    const cards = [...requiredResults.flat(), ...optionalCards];
+
+    endpointResults.forEach((result) => {
+      if (result.status === "rejected") {
+        console.warn("Um endpoint da OPTCG API nao respondeu.", result.reason);
+      }
+    });
+
+    if (cards.length === 0) {
+      throw new Error("Nenhum endpoint da OPTCG API respondeu.");
+    }
+
     const uniqueCards = new Map<string, OnePieceCard>();
 
     for (const card of cards) {
       uniqueCards.set(card.code, card);
     }
 
-    return Array.from(uniqueCards.values()).sort((a, b) => a.code.localeCompare(b.code));
+    cachedCards = Array.from(uniqueCards.values()).sort((a, b) => a.code.localeCompare(b.code));
+    cardCacheExpiresAt = Date.now() + CARD_CACHE_TTL;
+
+    return cachedCards;
   } catch (error) {
     console.error(error);
     throw new Error("Erro ao buscar cartas do One Piece TCG");

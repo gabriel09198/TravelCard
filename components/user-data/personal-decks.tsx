@@ -20,6 +20,19 @@ import type { OnePieceCard, UserDeck, UserDeckCard } from "@/types/onePieceCard"
 
 const DECK_COLORS = ["Red", "Green", "Blue", "Purple", "Black", "Yellow"] as const;
 
+function cardMatchesColors(card: OnePieceCard, colors: string[]): boolean {
+  if (colors.length === 0) {
+    return true;
+  }
+
+  const cardColors = card.color
+    .toLowerCase()
+    .split(/[^a-z]+/)
+    .filter(Boolean);
+
+  return colors.some((color) => cardColors.includes(color.toLowerCase()));
+}
+
 function getDeckFirestoreErrorMessage(error: unknown): string {
   if (error instanceof FirebaseError && error.code === "permission-denied") {
     return "O Firestore bloqueou o salvamento. Publique as regras em firestore.rules no Firebase Console.";
@@ -123,6 +136,7 @@ function DeckFormModal({
   const [selectedCards, setSelectedCards] = useState<UserDeckCard[]>(deck?.cards ?? []);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<OnePieceCard[]>([]);
+  const [hasSearched, setHasSearched] = useState(false);
   const [searching, setSearching] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -131,11 +145,20 @@ function DeckFormModal({
     () => selectedCards.reduce((sum, card) => sum + card.quantity, 0),
     [selectedCards]
   );
+  const filteredResults = useMemo(
+    () => results.filter((card) => cardMatchesColors(card, colors)),
+    [colors, results]
+  );
 
   async function searchCards() {
-    if (!query.trim()) return;
+    if (!query.trim()) {
+      setResults([]);
+      setHasSearched(false);
+      return;
+    }
 
     setSearching(true);
+    setHasSearched(true);
     setError("");
 
     try {
@@ -316,6 +339,12 @@ function DeckFormModal({
                 <Input
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      void searchCards();
+                    }
+                  }}
                   placeholder="Nome ou codigo"
                 />
                 <Button type="button" onClick={() => void searchCards()} disabled={searching}>
@@ -333,28 +362,49 @@ function DeckFormModal({
 
           <div className="grid gap-4 xl:grid-cols-[1fr_340px]">
             <div className="space-y-3">
-              <h3 className="pirate-title font-bold">Resultados</h3>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h3 className="pirate-title font-bold">Resultados</h3>
+                {hasSearched && !searching ? (
+                  <p className="text-xs text-muted-foreground">
+                    {filteredResults.length} de {results.length} carta(s)
+                  </p>
+                ) : null}
+              </div>
               <div className="pirate-scrollbar max-h-[34rem] overflow-y-auto pr-1">
-                <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
-                  {results.map((card) => (
-                    <button
-                      key={card.id}
-                      type="button"
-                      onClick={() => addCard(card)}
-                      className="bounty-card overflow-hidden rounded-md text-left transition hover:-translate-y-1 hover:border-amber-300/65"
-                    >
-                      <div className="relative aspect-[5/7] bg-muted/40">
-                        {card.imageUrl ? (
-                          <Image src={card.imageUrl} alt={card.name} fill sizes="160px" className="object-cover" />
-                        ) : null}
-                      </div>
-                      <div className="space-y-1 p-2">
-                        <p className="truncate text-xs font-bold">{card.name}</p>
-                        <p className="text-[11px] text-muted-foreground">{card.code}</p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
+                {searching ? (
+                  <p className="pirate-parchment rounded-md p-6 text-center text-sm text-muted-foreground">
+                    Buscando cartas...
+                  </p>
+                ) : hasSearched && results.length === 0 ? (
+                  <p className="pirate-parchment rounded-md p-6 text-center text-sm text-muted-foreground">
+                    Nenhuma carta encontrada para &quot;{query.trim()}&quot;.
+                  </p>
+                ) : hasSearched && filteredResults.length === 0 ? (
+                  <p className="pirate-parchment rounded-md p-6 text-center text-sm text-muted-foreground">
+                    Há resultados para a busca, mas nenhum corresponde às cores selecionadas.
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+                    {filteredResults.map((card) => (
+                      <button
+                        key={card.id}
+                        type="button"
+                        onClick={() => addCard(card)}
+                        className="bounty-card overflow-hidden rounded-md text-left transition hover:-translate-y-1 hover:border-amber-300/65"
+                      >
+                        <div className="relative aspect-[5/7] bg-muted/40">
+                          {card.imageUrl ? (
+                            <Image src={card.imageUrl} alt={card.name} fill sizes="160px" className="object-cover" />
+                          ) : null}
+                        </div>
+                        <div className="space-y-1 p-2">
+                          <p className="truncate text-xs font-bold">{card.name}</p>
+                          <p className="text-[11px] text-muted-foreground">{card.code}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
