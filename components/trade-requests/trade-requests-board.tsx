@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FirebaseError } from "firebase/app";
 import {
   Check,
   Globe2,
@@ -30,6 +31,22 @@ import type {
   TradeRequestType
 } from "@/types/onePieceCard";
 
+function getTradeRequestErrorMessage(error: unknown): string {
+  if (error instanceof FirebaseError) {
+    if (error.code === "permission-denied") {
+      return "O Firebase bloqueou a solicitacao. Publique as regras novas do Firestore para liberar o mercado geral.";
+    }
+
+    if (error.code === "unavailable") {
+      return "O Firebase esta temporariamente indisponivel. Tente novamente em instantes.";
+    }
+
+    return `Nao foi possivel salvar a solicitacao (${error.code}).`;
+  }
+
+  return "Nao foi possivel salvar a solicitacao.";
+}
+
 export function TradeRequestsBoard() {
   const { user, profile } = useAuth();
   const [requests, setRequests] = useState<TradeRequest[]>([]);
@@ -57,11 +74,11 @@ export function TradeRequestsBoard() {
       return undefined;
     }
 
-    const unsubscribeRequests = subscribeToTradeRequests(user.uid, setRequests, () => {
-      setError("Nao foi possivel carregar as solicitacoes.");
+    const unsubscribeRequests = subscribeToTradeRequests(user.uid, setRequests, (loadError) => {
+      setError(getTradeRequestErrorMessage(loadError));
     });
-    const unsubscribeProfiles = subscribeToPublicProfiles(user.uid, setProfiles, () => {
-      setError("Nao foi possivel carregar os usuarios cadastrados.");
+    const unsubscribeProfiles = subscribeToPublicProfiles(user.uid, setProfiles, (loadError) => {
+      setError(getTradeRequestErrorMessage(loadError));
     });
 
     return () => {
@@ -184,8 +201,9 @@ export function TradeRequestsBoard() {
       });
 
       resetForm();
-    } catch {
-      setError("Nao foi possivel salvar a solicitacao.");
+    } catch (saveError) {
+      console.error("Erro ao publicar solicitacao no Firestore:", saveError);
+      setError(getTradeRequestErrorMessage(saveError));
     } finally {
       setSaving(false);
     }
