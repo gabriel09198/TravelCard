@@ -144,13 +144,28 @@ body {
 }
 
 .pirate-compass {
-  animation: pirate-compass-turn calc(180s / var(--pirate-motion-speed)) linear infinite;
   height: clamp(12rem, 23vw, 23rem);
   left: clamp(-6rem, -4vw, -2rem);
   opacity: 0.11;
   position: absolute;
   top: 18%;
   width: clamp(12rem, 23vw, 23rem);
+}
+
+.pirate-compass-primary {
+  animation: pirate-compass-turn calc(180s / var(--pirate-motion-speed)) linear infinite;
+}
+
+.pirate-compass-secondary {
+  animation:
+    pirate-compass-turn-reverse calc(240s / var(--pirate-motion-speed)) linear infinite,
+    pirate-compass-float calc(16s / var(--pirate-motion-speed)) ease-in-out infinite;
+  height: clamp(7rem, 13vw, 13rem);
+  left: auto;
+  opacity: 0.065;
+  right: 4%;
+  top: 43%;
+  width: clamp(7rem, 13vw, 13rem);
 }
 
 .pirate-compass-ring {
@@ -256,32 +271,78 @@ body {
 }
 
 .pirate-ship {
-  animation: pirate-ship-sail calc(18s / var(--pirate-motion-speed)) ease-in-out infinite;
-  bottom: 18%;
-  filter: drop-shadow(0 11px 12px rgb(0 0 0 / 0.7));
-  height: clamp(6.5rem, 13vw, 12rem);
-  opacity: 0.52;
+  filter:
+    drop-shadow(0 11px 12px rgb(0 0 0 / 0.72))
+    drop-shadow(0 0 8px rgb(217 119 6 / 0.12));
   position: absolute;
-  right: 12%;
   transform-origin: 50% 90%;
+  z-index: 2;
+}
+
+.pirate-ship-main {
+  animation: pirate-ship-sail calc(18s / var(--pirate-motion-speed)) ease-in-out infinite;
+  bottom: 7%;
+  height: clamp(6.5rem, 13vw, 12rem);
+  opacity: 0.76;
+  right: 8%;
   width: clamp(10rem, 21vw, 19rem);
+}
+
+.pirate-ship-midground {
+  animation: pirate-ship-cross-mid calc(58s / var(--pirate-motion-speed)) linear infinite;
+  animation-delay: calc(-21s / var(--pirate-motion-speed));
+  bottom: 14%;
+  height: clamp(4.5rem, 8vw, 7rem);
+  left: -14rem;
+  opacity: 0.48;
+  width: clamp(7rem, 13vw, 11rem);
+}
+
+.pirate-fleet {
+  inset: 0;
+  position: absolute;
+  z-index: 2;
+}
+
+.pirate-ship-distant {
+  filter: blur(0.35px) drop-shadow(0 5px 8px rgb(0 0 0 / 0.65));
+  height: clamp(2.8rem, 5vw, 4.5rem);
+  opacity: 0.3;
+  width: clamp(4.5rem, 8vw, 7rem);
+}
+
+.pirate-ship-distant-one {
+  animation: pirate-ship-cross-far calc(92s / var(--pirate-motion-speed)) linear infinite;
+  animation-delay: calc(-37s / var(--pirate-motion-speed));
+  bottom: 21%;
+  left: -10rem;
+}
+
+.pirate-ship-distant-two {
+  animation: pirate-ship-cross-reverse calc(118s / var(--pirate-motion-speed)) linear infinite;
+  animation-delay: calc(-64s / var(--pirate-motion-speed));
+  bottom: 24%;
+  right: -10rem;
+  transform: scaleX(-1);
 }
 
 .pirate-ship-hull,
 .pirate-ship-mast,
 .pirate-ship-flag {
-  fill: #020617;
+  fill: #071827;
+  stroke: rgb(217 119 6 / 0.52);
+  stroke-width: 1.4;
 }
 
 .pirate-ship-sail {
-  fill: rgb(15 23 42 / 0.92);
-  stroke: rgb(217 119 6 / 0.38);
-  stroke-width: 1;
+  fill: rgb(30 41 59 / 0.96);
+  stroke: rgb(251 191 36 / 0.62);
+  stroke-width: 1.7;
 }
 
 .pirate-ship-detail {
   fill: none;
-  stroke: rgb(251 191 36 / 0.28);
+  stroke: rgb(251 191 36 / 0.52);
   stroke-width: 2;
 }
 
@@ -294,6 +355,7 @@ body {
   opacity: 0.78;
   position: absolute;
   width: 24%;
+  z-index: 1;
 }
 
 .pirate-island-left {
@@ -313,6 +375,7 @@ body {
   overflow: hidden;
   position: absolute;
   width: 100%;
+  z-index: 1;
 }
 
 .pirate-wave {
@@ -361,12 +424,14 @@ body {
     linear-gradient(180deg, transparent 52%, rgb(2 6 23 / 0.58));
   inset: 0;
   position: absolute;
+  z-index: 4;
 }
 
 .pirate-readability-layer {
   background: linear-gradient(110deg, rgb(2 6 23 / 0.68), rgb(2 6 23 / 0.36) 48%, rgb(2 6 23 / 0.58));
   inset: 0;
   position: absolute;
+  z-index: 5;
 }
 
 @keyframes pirate-stars-drift {
@@ -387,6 +452,22 @@ body {
 @keyframes pirate-compass-turn {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes pirate-compass-turn-reverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes pirate-compass-float {
+  0%,
+  100% {
+    margin-top: 0;
+  }
+  50% {
+    margin-top: -12px;
   }
 }
 
@@ -418,6 +499,48 @@ body {
   }
 }
 
+@keyframes pirate-ship-cross-mid {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(-1deg);
+  }
+  25% {
+    transform: translate3d(31vw, -5px, 0) rotate(1deg);
+  }
+  50% {
+    transform: translate3d(62vw, 1px, 0) rotate(-0.7deg);
+  }
+  75% {
+    transform: translate3d(93vw, -6px, 0) rotate(1.2deg);
+  }
+  100% {
+    transform: translate3d(calc(100vw + 28rem), 0, 0) rotate(-1deg);
+  }
+}
+
+@keyframes pirate-ship-cross-far {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(-0.6deg);
+  }
+  50% {
+    transform: translate3d(58vw, -4px, 0) rotate(0.8deg);
+  }
+  100% {
+    transform: translate3d(calc(100vw + 20rem), 0, 0) rotate(-0.6deg);
+  }
+}
+
+@keyframes pirate-ship-cross-reverse {
+  0% {
+    transform: translate3d(0, 0, 0) scaleX(-1) rotate(-0.5deg);
+  }
+  50% {
+    transform: translate3d(-58vw, -3px, 0) scaleX(-1) rotate(0.7deg);
+  }
+  100% {
+    transform: translate3d(calc(-100vw - 20rem), 0, 0) scaleX(-1) rotate(-0.5deg);
+  }
+}
+
 @keyframes pirate-wave-travel {
   to {
     transform: translate3d(180px, 0, 0) scaleY(var(--pirate-wave-scale));
@@ -442,7 +565,7 @@ body {
     width: 156%;
   }
 
-  .pirate-compass {
+  .pirate-compass-primary {
     height: clamp(10rem, 29vw, 15rem);
     left: -4.5rem;
     opacity: 0.085;
@@ -450,16 +573,35 @@ body {
     width: clamp(10rem, 29vw, 15rem);
   }
 
+  .pirate-compass-secondary {
+    height: 8rem;
+    opacity: 0.05;
+    right: -2rem;
+    top: 46%;
+    width: 8rem;
+  }
+
   .pirate-moon {
     right: 8%;
     top: 12%;
   }
 
-  .pirate-ship {
-    bottom: 18%;
+  .pirate-ship-main {
+    bottom: 8%;
     height: clamp(6rem, 18vw, 9rem);
-    right: 4%;
+    right: 2%;
     width: clamp(9rem, 29vw, 14rem);
+  }
+
+  .pirate-ship-midground {
+    bottom: 15%;
+    height: 4.5rem;
+    width: 7rem;
+  }
+
+  .pirate-ship-distant {
+    height: 2.8rem;
+    width: 4.5rem;
   }
 
   .pirate-fog {
@@ -520,12 +662,16 @@ body {
     width: 215%;
   }
 
-  .pirate-compass {
+  .pirate-compass-primary {
     height: 10rem;
     left: -5.5rem;
     opacity: 0.07;
     top: 27%;
     width: 10rem;
+  }
+
+  .pirate-compass-secondary {
+    display: none;
   }
 
   .pirate-compass-axis::before {
@@ -556,12 +702,30 @@ body {
     display: none;
   }
 
-  .pirate-ship {
-    bottom: 18%;
+  .pirate-ship-main {
+    bottom: 11%;
     height: 6.2rem;
-    opacity: 0.45;
+    opacity: 0.62;
     right: -0.5rem;
     width: 9.8rem;
+  }
+
+  .pirate-ship-midground {
+    animation-duration: calc(74s / var(--pirate-motion-speed));
+    bottom: 16%;
+    height: 3.5rem;
+    opacity: 0.32;
+    width: 5.5rem;
+  }
+
+  .pirate-ship-distant-two {
+    display: none;
+  }
+
+  .pirate-ship-distant-one {
+    animation-duration: calc(110s / var(--pirate-motion-speed));
+    bottom: 21%;
+    opacity: 0.2;
   }
 
   .pirate-island {
@@ -612,7 +776,7 @@ body {
     display: none;
   }
 
-  .pirate-compass {
+  .pirate-compass-primary {
     left: -6.5rem;
     opacity: 0.05;
   }
@@ -621,8 +785,8 @@ body {
     right: 6%;
   }
 
-  .pirate-ship {
-    bottom: 17%;
+  .pirate-ship-main {
+    bottom: 10%;
     height: 5.5rem;
     right: -1.75rem;
     width: 8.7rem;
@@ -637,7 +801,8 @@ body {
   .pirate-chart,
   .pirate-compass,
   .pirate-fog-front,
-  .pirate-island {
+  .pirate-island,
+  .pirate-ship-distant {
     display: none;
   }
 
@@ -648,11 +813,17 @@ body {
     width: 3rem;
   }
 
-  .pirate-ship {
-    bottom: 21%;
+  .pirate-ship-main {
+    bottom: 8%;
     height: 5rem;
     right: 7%;
     width: 8rem;
+  }
+
+  .pirate-ship-midground {
+    bottom: 16%;
+    height: 3.2rem;
+    width: 5rem;
   }
 
   .pirate-ocean {
