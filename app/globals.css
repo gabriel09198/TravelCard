@@ -27,6 +27,12 @@
   border-color: hsl(var(--border));
 }
 
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   background: hsl(var(--background));
   color: hsl(var(--foreground));
@@ -34,8 +40,15 @@ body {
 
 .app-shell {
   background: linear-gradient(180deg, rgb(3 8 18 / 0.08), rgb(3 8 18 / 0.42));
+  min-height: 100svh;
   position: relative;
   z-index: 1;
+}
+
+@supports (min-height: 100dvh) {
+  .app-shell {
+    min-height: 100dvh;
+  }
 }
 
 .app-shell::before {
@@ -57,15 +70,26 @@ body {
 }
 
 .pirate-background {
+  contain: layout paint;
   filter:
     saturate(var(--pirate-effect-intensity))
     contrast(var(--pirate-effect-intensity));
+  height: 100vh;
   inset: 0;
+  min-height: 100svh;
   opacity: var(--pirate-background-opacity);
   overflow: hidden;
   pointer-events: none;
   position: fixed;
+  width: 100vw;
   z-index: 0;
+}
+
+@supports (height: 100dvh) {
+  .pirate-background {
+    height: 100dvh;
+    min-height: 100dvh;
+  }
 }
 
 .pirate-sky {
@@ -400,33 +424,244 @@ body {
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 900px) {
+  .pirate-stars {
+    bottom: 28%;
+    opacity: 0.36;
+  }
+
+  .pirate-stars-near {
+    opacity: 0.14;
+  }
+
   .pirate-chart {
-    opacity: 0.07;
-    width: 170%;
+    height: 115%;
+    left: -28%;
+    opacity: 0.065;
+    top: -8%;
+    width: 156%;
   }
 
   .pirate-compass {
-    left: -6rem;
-    top: 24%;
+    height: clamp(10rem, 29vw, 15rem);
+    left: -4.5rem;
+    opacity: 0.085;
+    top: 22%;
+    width: clamp(10rem, 29vw, 15rem);
   }
 
   .pirate-moon {
-    right: 9%;
-    top: 14%;
+    right: 8%;
+    top: 12%;
   }
 
   .pirate-ship {
-    bottom: 20%;
-    right: 2%;
+    bottom: 18%;
+    height: clamp(6rem, 18vw, 9rem);
+    right: 4%;
+    width: clamp(9rem, 29vw, 14rem);
+  }
+
+  .pirate-fog {
+    height: 27%;
+    left: -28%;
+    top: 47%;
+    width: 156%;
   }
 
   .pirate-ocean {
-    height: 27%;
+    height: 29%;
+  }
+
+  .pirate-wave {
+    background-size: 126px 52px, auto;
+  }
+
+  .pirate-wave-middle {
+    background-size: 158px 60px, auto;
+  }
+
+  .pirate-wave-front {
+    background-size: 184px 68px, auto;
   }
 
   .pirate-readability-layer {
-    background: rgb(2 6 23 / 0.55);
+    background: linear-gradient(180deg, rgb(2 6 23 / 0.56), rgb(2 6 23 / 0.44) 55%, rgb(2 6 23 / 0.64));
+  }
+
+  .app-shell::before {
+    background-size: 54px 54px;
+    opacity: 0.58;
+  }
+}
+
+@media (max-width: 640px) {
+  .pirate-sky {
+    background:
+      radial-gradient(circle at 82% 12%, rgb(229 231 235 / 0.14), transparent 4.5rem),
+      radial-gradient(circle at 10% 5%, rgb(153 27 27 / 0.14), transparent 15rem),
+      radial-gradient(circle at 88% 21%, rgb(14 116 144 / 0.18), transparent 20rem),
+      linear-gradient(180deg, #030712 0%, #071426 50%, #0a2332 72%, #07141f 100%);
+  }
+
+  .pirate-stars {
+    background-size: 91px 89px, 127px 113px, 83px 107px;
+    inset: 0 0 35%;
+    opacity: 0.31;
+  }
+
+  .pirate-stars-near {
+    display: none;
+  }
+
+  .pirate-chart {
+    left: -58%;
+    opacity: 0.045;
+    width: 215%;
+  }
+
+  .pirate-compass {
+    height: 10rem;
+    left: -5.5rem;
+    opacity: 0.07;
+    top: 27%;
+    width: 10rem;
+  }
+
+  .pirate-compass-axis::before {
+    border-bottom-width: 38px;
+  }
+
+  .pirate-compass-axis::after {
+    border-top-width: 38px;
+  }
+
+  .pirate-moon {
+    height: 3.75rem;
+    right: 8%;
+    top: 11%;
+    width: 3.75rem;
+  }
+
+  .pirate-fog {
+    filter: blur(11px);
+    height: 24%;
+    left: -42%;
+    opacity: 0.5;
+    top: 49%;
+    width: 184%;
+  }
+
+  .pirate-fog-front {
+    display: none;
+  }
+
+  .pirate-ship {
+    bottom: 18%;
+    height: 6.2rem;
+    opacity: 0.45;
+    right: -0.5rem;
+    width: 9.8rem;
+  }
+
+  .pirate-island {
+    bottom: 15%;
+    height: 3.5%;
+    opacity: 0.62;
+    width: 38%;
+  }
+
+  .pirate-island-left {
+    left: -19%;
+  }
+
+  .pirate-island-right {
+    right: -24%;
+  }
+
+  .pirate-ocean {
+    height: 28%;
+  }
+
+  .pirate-wave-back {
+    bottom: 17%;
+  }
+
+  .pirate-wave-middle {
+    bottom: -2%;
+  }
+
+  .pirate-wave-front {
+    bottom: -35%;
+  }
+
+  .pirate-vignette {
+    background:
+      radial-gradient(ellipse at center, transparent 28%, rgb(2 6 23 / 0.28) 68%, rgb(2 6 23 / 0.72) 100%),
+      linear-gradient(180deg, transparent 45%, rgb(2 6 23 / 0.58));
+  }
+
+  .pirate-readability-layer {
+    background: linear-gradient(180deg, rgb(2 6 23 / 0.62), rgb(2 6 23 / 0.48) 52%, rgb(2 6 23 / 0.68));
+  }
+}
+
+@media (max-width: 390px) {
+  .pirate-chart,
+  .pirate-island-left {
+    display: none;
+  }
+
+  .pirate-compass {
+    left: -6.5rem;
+    opacity: 0.05;
+  }
+
+  .pirate-moon {
+    right: 6%;
+  }
+
+  .pirate-ship {
+    bottom: 17%;
+    height: 5.5rem;
+    right: -1.75rem;
+    width: 8.7rem;
+  }
+
+  .pirate-ocean {
+    height: 26%;
+  }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  .pirate-chart,
+  .pirate-compass,
+  .pirate-fog-front,
+  .pirate-island {
+    display: none;
+  }
+
+  .pirate-moon {
+    height: 3rem;
+    right: 8%;
+    top: 12%;
+    width: 3rem;
+  }
+
+  .pirate-ship {
+    bottom: 21%;
+    height: 5rem;
+    right: 7%;
+    width: 8rem;
+  }
+
+  .pirate-ocean {
+    height: 31%;
+  }
+
+  .pirate-fog {
+    height: 22%;
+    top: 45%;
   }
 }
 
