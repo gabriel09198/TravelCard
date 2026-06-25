@@ -124,7 +124,6 @@ body {
 }
 
 .pirate-chart {
-  animation: pirate-chart-drift calc(85s / var(--pirate-motion-speed)) ease-in-out infinite alternate;
   fill: none;
   height: 105%;
   left: -4%;
@@ -152,14 +151,7 @@ body {
   width: clamp(12rem, 23vw, 23rem);
 }
 
-.pirate-compass-primary {
-  animation: pirate-compass-turn calc(180s / var(--pirate-motion-speed)) linear infinite;
-}
-
 .pirate-compass-secondary {
-  animation:
-    pirate-compass-turn-reverse calc(240s / var(--pirate-motion-speed)) linear infinite,
-    pirate-compass-float calc(16s / var(--pirate-motion-speed)) ease-in-out infinite;
   height: clamp(7rem, 13vw, 13rem);
   left: auto;
   opacity: 0.065;
@@ -224,7 +216,6 @@ body {
 }
 
 .pirate-moon {
-  animation: pirate-moon-pulse calc(12s / var(--pirate-motion-speed)) ease-in-out infinite;
   background: rgb(254 243 199 / 0.86);
   border-radius: 50%;
   box-shadow:
@@ -248,7 +239,6 @@ body {
 }
 
 .pirate-fog {
-  animation: pirate-fog-drift calc(45s / var(--pirate-motion-speed)) ease-in-out infinite alternate;
   background:
     radial-gradient(ellipse at 20% 50%, rgb(186 230 253 / 0.13), transparent 32%),
     radial-gradient(ellipse at 58% 50%, rgb(226 232 240 / 0.09), transparent 35%),
@@ -263,8 +253,6 @@ body {
 }
 
 .pirate-fog-front {
-  animation-direction: alternate-reverse;
-  animation-duration: calc(64s / var(--pirate-motion-speed));
   opacity: 0.38;
   top: 55%;
   transform: scaleY(0.65);
@@ -280,7 +268,6 @@ body {
 }
 
 .pirate-ship-main {
-  animation: pirate-ship-sail calc(18s / var(--pirate-motion-speed)) ease-in-out infinite;
   bottom: 7%;
   height: clamp(6.5rem, 13vw, 12rem);
   opacity: 0.76;
@@ -289,8 +276,6 @@ body {
 }
 
 .pirate-ship-midground {
-  animation: pirate-ship-cross-mid calc(58s / var(--pirate-motion-speed)) linear infinite;
-  animation-delay: calc(-21s / var(--pirate-motion-speed));
   bottom: 14%;
   height: clamp(4.5rem, 8vw, 7rem);
   left: -14rem;
@@ -312,18 +297,13 @@ body {
 }
 
 .pirate-ship-distant-one {
-  animation: pirate-ship-cross-far calc(92s / var(--pirate-motion-speed)) linear infinite;
-  animation-delay: calc(-37s / var(--pirate-motion-speed));
   bottom: 21%;
   left: -10rem;
 }
 
 .pirate-ship-distant-two {
-  animation: pirate-ship-cross-reverse calc(118s / var(--pirate-motion-speed)) linear infinite;
-  animation-delay: calc(-64s / var(--pirate-motion-speed));
   bottom: 24%;
   right: -10rem;
-  transform: scaleX(-1);
 }
 
 .pirate-ship-hull,
@@ -437,107 +417,6 @@ body {
 @keyframes pirate-stars-drift {
   to {
     background-position: 124px 17px, -78px 51px, 134px 91px;
-  }
-}
-
-@keyframes pirate-chart-drift {
-  from {
-    transform: translate3d(-1.5%, -1%, 0) rotate(-0.5deg);
-  }
-  to {
-    transform: translate3d(1.5%, 1%, 0) rotate(0.5deg);
-  }
-}
-
-@keyframes pirate-compass-turn {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes pirate-compass-turn-reverse {
-  to {
-    transform: rotate(-360deg);
-  }
-}
-
-@keyframes pirate-compass-float {
-  0%,
-  100% {
-    margin-top: 0;
-  }
-  50% {
-    margin-top: -12px;
-  }
-}
-
-@keyframes pirate-moon-pulse {
-  50% {
-    box-shadow:
-      0 0 45px rgb(254 243 199 / 0.27),
-      0 0 125px rgb(14 116 144 / 0.24);
-    transform: scale(1.025);
-  }
-}
-
-@keyframes pirate-fog-drift {
-  from {
-    transform: translate3d(-4%, 0, 0);
-  }
-  to {
-    transform: translate3d(4%, 3%, 0);
-  }
-}
-
-@keyframes pirate-ship-sail {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(-1.4deg);
-  }
-  50% {
-    transform: translate3d(-12px, -8px, 0) rotate(1.4deg);
-  }
-}
-
-@keyframes pirate-ship-cross-mid {
-  0% {
-    transform: translate3d(0, 0, 0) rotate(-1deg);
-  }
-  25% {
-    transform: translate3d(31vw, -5px, 0) rotate(1deg);
-  }
-  50% {
-    transform: translate3d(62vw, 1px, 0) rotate(-0.7deg);
-  }
-  75% {
-    transform: translate3d(93vw, -6px, 0) rotate(1.2deg);
-  }
-  100% {
-    transform: translate3d(calc(100vw + 28rem), 0, 0) rotate(-1deg);
-  }
-}
-
-@keyframes pirate-ship-cross-far {
-  0% {
-    transform: translate3d(0, 0, 0) rotate(-0.6deg);
-  }
-  50% {
-    transform: translate3d(58vw, -4px, 0) rotate(0.8deg);
-  }
-  100% {
-    transform: translate3d(calc(100vw + 20rem), 0, 0) rotate(-0.6deg);
-  }
-}
-
-@keyframes pirate-ship-cross-reverse {
-  0% {
-    transform: translate3d(0, 0, 0) scaleX(-1) rotate(-0.5deg);
-  }
-  50% {
-    transform: translate3d(-58vw, -3px, 0) scaleX(-1) rotate(0.7deg);
-  }
-  100% {
-    transform: translate3d(calc(-100vw - 20rem), 0, 0) scaleX(-1) rotate(-0.5deg);
   }
 }
 
@@ -711,7 +590,6 @@ body {
   }
 
   .pirate-ship-midground {
-    animation-duration: calc(74s / var(--pirate-motion-speed));
     bottom: 16%;
     height: 3.5rem;
     opacity: 0.32;
@@ -723,7 +601,6 @@ body {
   }
 
   .pirate-ship-distant-one {
-    animation-duration: calc(110s / var(--pirate-motion-speed));
     bottom: 21%;
     opacity: 0.2;
   }
