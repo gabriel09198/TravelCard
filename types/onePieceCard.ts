@@ -80,6 +80,7 @@ export interface UserWishlistCard {
 }
 
 export type TradeRequestType = "troca" | "venda";
+export type TradeOfferTarget = "geral" | "usuario";
 
 export interface AppUserProfile {
   id: string;
@@ -89,17 +90,31 @@ export interface AppUserProfile {
   createdAt?: Date;
 }
 
+export interface PublicUserProfile {
+  id: string;
+  name: string;
+  email: string;
+}
+
 export interface TradeRequest {
   id: string;
+  cardId: string;
   cardName: string;
-  cardCode?: string;
-  type: TradeRequestType;
+  cardCode: string;
+  cardImage?: string;
+  cardColor?: string;
+  cardType?: string;
+  requestType: TradeRequestType;
+  offerTarget: TradeOfferTarget;
+  targetUserId?: string;
+  targetUserName?: string;
+  targetUserEmail?: string;
   description: string;
   price?: number | null;
   wantedCard?: string;
-  userId: string;
-  userName: string;
-  userEmail: string;
+  createdByUserId: string;
+  createdByName: string;
+  createdByEmail: string;
   createdAt: Date;
 }
 

@@ -32,6 +32,19 @@ function buildUserProfile(user: User, name?: string, handle?: string): AppUserPr
   };
 }
 
+async function savePublicUserProfile(profile: AppUserProfile): Promise<void> {
+  await setDoc(
+    doc(firestore, "publicProfiles", profile.id),
+    {
+      userId: profile.id,
+      name: profile.name,
+      email: profile.email,
+      updatedAt: serverTimestamp()
+    },
+    { merge: true }
+  );
+}
+
 export async function saveUserProfile(
   user: User,
   name?: string,
@@ -52,6 +65,12 @@ export async function saveUserProfile(
     },
     { merge: true }
   );
+
+  try {
+    await savePublicUserProfile(profile);
+  } catch (error) {
+    console.warn("Perfil privado salvo, mas nao foi possivel atualizar o perfil publico.", error);
+  }
 
   return profile;
 }
@@ -124,6 +143,12 @@ export async function ensureUserProfile(user: User): Promise<AppUserProfile | nu
   const existingProfile = await getUserProfile(user.uid);
 
   if (existingProfile) {
+    try {
+      await savePublicUserProfile(existingProfile);
+    } catch (error) {
+      console.warn("Nao foi possivel atualizar o perfil publico do usuario.", error);
+    }
+
     return existingProfile;
   }
 
