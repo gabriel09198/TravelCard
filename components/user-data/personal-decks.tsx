@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Layers, Minus, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { FirebaseError } from "firebase/app";
 
@@ -140,6 +141,16 @@ function DeckFormModal({
   const [searching, setSearching] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
 
   const totalCards = useMemo(
     () => selectedCards.reduce((sum, card) => sum + card.quantity, 0),
@@ -284,9 +295,13 @@ function DeckFormModal({
     }
   }
 
-  return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 p-3 backdrop-blur-sm sm:p-4">
-      <div className="pirate-panel mx-auto flex max-h-[94vh] w-full max-w-7xl flex-col overflow-hidden rounded-lg">
+  if (typeof document === "undefined") {
+    return null;
+  }
+
+  return createPortal(
+    <div className="fixed inset-0 z-[100] isolate overflow-y-auto bg-black/75 p-3 backdrop-blur-sm sm:p-4">
+      <div className="pirate-panel pointer-events-auto relative z-10 mx-auto flex max-h-[94vh] w-full max-w-7xl flex-col overflow-hidden rounded-lg">
         <div className="flex items-start justify-between gap-4 border-b border-amber-500/25 bg-slate-950/50 p-4">
           <div>
             <h2 className="pirate-title text-2xl font-black">{deck ? "Editar deck" : "Criar deck"}</h2>
@@ -300,7 +315,7 @@ function DeckFormModal({
         </div>
 
         <form onSubmit={handleSubmit} className="pirate-scrollbar grid min-h-0 flex-1 gap-4 overflow-y-auto p-4 lg:grid-cols-[380px_1fr]">
-          <div className="space-y-4">
+          <div className="relative z-20 space-y-4">
             <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="Nome do deck" required />
             <textarea
               value={description}
@@ -337,6 +352,7 @@ function DeckFormModal({
               <p className="pirate-subtitle mb-2 text-sm">Buscar cartas</p>
               <div className="flex gap-2">
                 <Input
+                  ref={searchInputRef}
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   onKeyDown={(event) => {
@@ -346,8 +362,16 @@ function DeckFormModal({
                     }
                   }}
                   placeholder="Nome ou codigo"
+                  autoComplete="off"
                 />
-                <Button type="button" onClick={() => void searchCards()} disabled={searching}>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    void searchCards();
+                    searchInputRef.current?.focus();
+                  }}
+                  disabled={searching}
+                >
                   <Search className="h-4 w-4" />
                 </Button>
               </div>
@@ -449,7 +473,8 @@ function DeckFormModal({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
