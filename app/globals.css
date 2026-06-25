@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 :root {
+  --pirate-motion-speed: 1;
+  --pirate-background-opacity: 1;
+  --pirate-effect-intensity: 1;
   --background: 219 48% 6%;
   --foreground: 43 42% 93%;
   --card: 218 40% 10%;
@@ -25,23 +28,14 @@
 }
 
 body {
-  background:
-    radial-gradient(circle at 10% 2%, rgba(220, 38, 38, 0.23), transparent 25rem),
-    radial-gradient(circle at 88% 6%, rgba(14, 116, 144, 0.28), transparent 32rem),
-    radial-gradient(circle at 62% 86%, rgba(245, 158, 11, 0.14), transparent 26rem),
-    linear-gradient(135deg, rgba(2, 10, 24, 0.99), rgba(8, 21, 38, 0.98) 45%, rgba(31, 20, 10, 0.98)),
-    hsl(var(--background));
+  background: hsl(var(--background));
   color: hsl(var(--foreground));
 }
 
 .app-shell {
-  background:
-    linear-gradient(180deg, rgba(7, 16, 30, 0.68), rgba(5, 9, 17, 0.97)),
-    repeating-linear-gradient(120deg, rgba(245, 158, 11, 0.05) 0 1px, transparent 1px 18px),
-    repeating-linear-gradient(0deg, rgba(125, 75, 28, 0.035) 0 2px, transparent 2px 16px),
-    radial-gradient(ellipse at 50% 0%, rgba(148, 88, 24, 0.17), transparent 38rem),
-    transparent;
+  background: linear-gradient(180deg, rgb(3 8 18 / 0.08), rgb(3 8 18 / 0.42));
   position: relative;
+  z-index: 1;
 }
 
 .app-shell::before {
@@ -60,6 +54,389 @@ body {
 .app-shell > * {
   position: relative;
   z-index: 1;
+}
+
+.pirate-background {
+  filter:
+    saturate(var(--pirate-effect-intensity))
+    contrast(var(--pirate-effect-intensity));
+  inset: 0;
+  opacity: var(--pirate-background-opacity);
+  overflow: hidden;
+  pointer-events: none;
+  position: fixed;
+  z-index: 0;
+}
+
+.pirate-sky {
+  background:
+    radial-gradient(circle at 79% 14%, rgb(229 231 235 / 0.15), transparent 7rem),
+    radial-gradient(circle at 12% 5%, rgb(153 27 27 / 0.2), transparent 24rem),
+    radial-gradient(circle at 88% 20%, rgb(14 116 144 / 0.24), transparent 34rem),
+    linear-gradient(180deg, #030712 0%, #071426 48%, #0a2332 71%, #07141f 100%);
+  inset: 0;
+  position: absolute;
+}
+
+.pirate-stars {
+  animation: pirate-stars-drift calc(105s / var(--pirate-motion-speed)) linear infinite;
+  background-image:
+    radial-gradient(circle, rgb(254 243 199 / 0.9) 0 1px, transparent 1.5px),
+    radial-gradient(circle, rgb(186 230 253 / 0.65) 0 1px, transparent 1.4px),
+    radial-gradient(circle, rgb(254 215 170 / 0.55) 0 0.8px, transparent 1.3px);
+  background-position: 11px 17px, 73px 51px, 37px 91px;
+  background-size: 113px 109px, 151px 137px, 97px 131px;
+  inset: 0 0 33%;
+  opacity: 0.46;
+  position: absolute;
+}
+
+.pirate-stars-near {
+  animation-direction: reverse;
+  animation-duration: calc(150s / var(--pirate-motion-speed));
+  filter: drop-shadow(0 0 3px rgb(250 204 21 / 0.38));
+  opacity: 0.24;
+  transform: scale(1.35);
+}
+
+.pirate-chart {
+  animation: pirate-chart-drift calc(85s / var(--pirate-motion-speed)) ease-in-out infinite alternate;
+  fill: none;
+  height: 105%;
+  left: -4%;
+  opacity: 0.1;
+  position: absolute;
+  stroke: rgb(251 191 36);
+  stroke-dasharray: 7 13;
+  stroke-linecap: round;
+  stroke-width: 1.2;
+  top: -4%;
+  width: 108%;
+}
+
+.pirate-chart circle {
+  fill: rgb(251 191 36 / 0.28);
+  stroke-dasharray: none;
+}
+
+.pirate-compass {
+  animation: pirate-compass-turn calc(180s / var(--pirate-motion-speed)) linear infinite;
+  height: clamp(12rem, 23vw, 23rem);
+  left: clamp(-6rem, -4vw, -2rem);
+  opacity: 0.11;
+  position: absolute;
+  top: 18%;
+  width: clamp(12rem, 23vw, 23rem);
+}
+
+.pirate-compass-ring {
+  border: 2px solid rgb(251 191 36);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 10px rgb(251 191 36 / 0.04),
+    inset 0 0 0 12px rgb(251 191 36 / 0.45);
+  inset: 8%;
+  position: absolute;
+}
+
+.pirate-compass-axis {
+  background: linear-gradient(90deg, transparent, rgb(251 191 36) 48% 52%, transparent);
+  height: 84%;
+  left: 49%;
+  position: absolute;
+  top: 8%;
+  transform-origin: center;
+  width: 2%;
+}
+
+.pirate-compass-axis::before,
+.pirate-compass-axis::after {
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  content: "";
+  left: 50%;
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.pirate-compass-axis::before {
+  border-bottom: 52px solid rgb(251 191 36);
+  top: -3%;
+}
+
+.pirate-compass-axis::after {
+  border-top: 52px solid rgb(251 191 36 / 0.55);
+  bottom: -3%;
+}
+
+.pirate-compass-axis-cross {
+  transform: rotate(90deg) scale(0.72);
+}
+
+.pirate-compass-core {
+  background: rgb(251 191 36);
+  border-radius: 50%;
+  box-shadow: 0 0 18px rgb(251 191 36 / 0.65);
+  height: 6%;
+  left: 47%;
+  position: absolute;
+  top: 47%;
+  width: 6%;
+}
+
+.pirate-moon {
+  animation: pirate-moon-pulse calc(12s / var(--pirate-motion-speed)) ease-in-out infinite;
+  background: rgb(254 243 199 / 0.86);
+  border-radius: 50%;
+  box-shadow:
+    0 0 36px rgb(254 243 199 / 0.2),
+    0 0 100px rgb(14 116 144 / 0.18);
+  height: clamp(3.5rem, 6vw, 6rem);
+  position: absolute;
+  right: 10%;
+  top: 10%;
+  width: clamp(3.5rem, 6vw, 6rem);
+}
+
+.pirate-moon span {
+  background: #06101d;
+  border-radius: 50%;
+  height: 92%;
+  left: -17%;
+  position: absolute;
+  top: -8%;
+  width: 92%;
+}
+
+.pirate-fog {
+  animation: pirate-fog-drift calc(45s / var(--pirate-motion-speed)) ease-in-out infinite alternate;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgb(186 230 253 / 0.13), transparent 32%),
+    radial-gradient(ellipse at 58% 50%, rgb(226 232 240 / 0.09), transparent 35%),
+    radial-gradient(ellipse at 88% 50%, rgb(125 211 252 / 0.1), transparent 29%);
+  filter: blur(14px);
+  height: 31%;
+  left: -18%;
+  opacity: 0.72;
+  position: absolute;
+  top: 43%;
+  width: 136%;
+}
+
+.pirate-fog-front {
+  animation-direction: alternate-reverse;
+  animation-duration: calc(64s / var(--pirate-motion-speed));
+  opacity: 0.38;
+  top: 55%;
+  transform: scaleY(0.65);
+}
+
+.pirate-ship {
+  animation: pirate-ship-sail calc(18s / var(--pirate-motion-speed)) ease-in-out infinite;
+  bottom: 18%;
+  filter: drop-shadow(0 11px 12px rgb(0 0 0 / 0.7));
+  height: clamp(6.5rem, 13vw, 12rem);
+  opacity: 0.52;
+  position: absolute;
+  right: 12%;
+  transform-origin: 50% 90%;
+  width: clamp(10rem, 21vw, 19rem);
+}
+
+.pirate-ship-hull,
+.pirate-ship-mast,
+.pirate-ship-flag {
+  fill: #020617;
+}
+
+.pirate-ship-sail {
+  fill: rgb(15 23 42 / 0.92);
+  stroke: rgb(217 119 6 / 0.38);
+  stroke-width: 1;
+}
+
+.pirate-ship-detail {
+  fill: none;
+  stroke: rgb(251 191 36 / 0.28);
+  stroke-width: 2;
+}
+
+.pirate-island {
+  background: #020b12;
+  border-radius: 50% 70% 0 0;
+  bottom: 15%;
+  filter: drop-shadow(0 -5px 15px rgb(2 132 199 / 0.08));
+  height: 5%;
+  opacity: 0.78;
+  position: absolute;
+  width: 24%;
+}
+
+.pirate-island-left {
+  left: -8%;
+  transform: rotate(2deg);
+}
+
+.pirate-island-right {
+  right: -12%;
+  transform: rotate(-3deg) scale(1.35);
+}
+
+.pirate-ocean {
+  bottom: 0;
+  height: 31%;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
+}
+
+.pirate-wave {
+  --pirate-wave-scale: 1;
+  animation: pirate-wave-travel calc(22s / var(--pirate-motion-speed)) linear infinite;
+  background:
+    radial-gradient(ellipse at 50% 0, transparent 54%, rgb(14 116 144 / 0.38) 56% 60%, transparent 62%)
+      0 0 / 150px 58px repeat-x,
+    linear-gradient(180deg, rgb(8 47 73 / 0.18), rgb(2 12 27 / 0.94));
+  bottom: -13%;
+  height: 104%;
+  left: -180px;
+  position: absolute;
+  transform: translate3d(0, 0, 0) scaleY(var(--pirate-wave-scale));
+  transform-origin: bottom;
+  width: calc(100% + 360px);
+}
+
+.pirate-wave-back {
+  --pirate-wave-scale: 0.62;
+  bottom: 24%;
+  opacity: 0.42;
+}
+
+.pirate-wave-middle {
+  animation-direction: reverse;
+  animation-duration: calc(31s / var(--pirate-motion-speed));
+  background-size: 190px 68px, auto;
+  bottom: 3%;
+  opacity: 0.62;
+}
+
+.pirate-wave-front {
+  animation-duration: calc(17s / var(--pirate-motion-speed));
+  background:
+    radial-gradient(ellipse at 50% 0, transparent 52%, rgb(14 116 144 / 0.48) 54% 58%, rgb(125 211 252 / 0.11) 59%, transparent 62%)
+      0 0 / 220px 78px repeat-x,
+    linear-gradient(180deg, rgb(8 47 73 / 0.3), rgb(2 6 23 / 0.98));
+  bottom: -31%;
+  opacity: 0.78;
+}
+
+.pirate-vignette {
+  background:
+    radial-gradient(ellipse at center, transparent 38%, rgb(2 6 23 / 0.38) 76%, rgb(2 6 23 / 0.82) 100%),
+    linear-gradient(180deg, transparent 52%, rgb(2 6 23 / 0.58));
+  inset: 0;
+  position: absolute;
+}
+
+.pirate-readability-layer {
+  background: linear-gradient(110deg, rgb(2 6 23 / 0.68), rgb(2 6 23 / 0.36) 48%, rgb(2 6 23 / 0.58));
+  inset: 0;
+  position: absolute;
+}
+
+@keyframes pirate-stars-drift {
+  to {
+    background-position: 124px 17px, -78px 51px, 134px 91px;
+  }
+}
+
+@keyframes pirate-chart-drift {
+  from {
+    transform: translate3d(-1.5%, -1%, 0) rotate(-0.5deg);
+  }
+  to {
+    transform: translate3d(1.5%, 1%, 0) rotate(0.5deg);
+  }
+}
+
+@keyframes pirate-compass-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pirate-moon-pulse {
+  50% {
+    box-shadow:
+      0 0 45px rgb(254 243 199 / 0.27),
+      0 0 125px rgb(14 116 144 / 0.24);
+    transform: scale(1.025);
+  }
+}
+
+@keyframes pirate-fog-drift {
+  from {
+    transform: translate3d(-4%, 0, 0);
+  }
+  to {
+    transform: translate3d(4%, 3%, 0);
+  }
+}
+
+@keyframes pirate-ship-sail {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-1.4deg);
+  }
+  50% {
+    transform: translate3d(-12px, -8px, 0) rotate(1.4deg);
+  }
+}
+
+@keyframes pirate-wave-travel {
+  to {
+    transform: translate3d(180px, 0, 0) scaleY(var(--pirate-wave-scale));
+  }
+}
+
+@media (max-width: 640px) {
+  .pirate-chart {
+    opacity: 0.07;
+    width: 170%;
+  }
+
+  .pirate-compass {
+    left: -6rem;
+    top: 24%;
+  }
+
+  .pirate-moon {
+    right: 9%;
+    top: 14%;
+  }
+
+  .pirate-ship {
+    bottom: 20%;
+    right: 2%;
+  }
+
+  .pirate-ocean {
+    height: 27%;
+  }
+
+  .pirate-readability-layer {
+    background: rgb(2 6 23 / 0.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pirate-background *,
+  .pirate-background *::before,
+  .pirate-background *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
 
 ::selection {

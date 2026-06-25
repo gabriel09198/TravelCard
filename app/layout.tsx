@@ -5,6 +5,7 @@ import { AuthGuard } from "@/components/auth/auth-guard";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { ChatWidget } from "@/components/chat/chat-widget";
 import { FirebaseAnalytics } from "@/components/firebase-analytics";
+import { PirateBackground } from "@/components/pirate-background";
 import { SiteHeader } from "@/components/site-header";
 
 import "./globals.css";
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="pt-BR">
       <body className={inter.className}>
+        <PirateBackground />
         <AuthProvider>
           <FirebaseAnalytics />
           <div className="app-shell min-h-screen">
