@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const features = [
   {
-    title: "Organize sua colecao",
-    text: "Marque cartas que voce tem, quer comprar ou pretende trocar com o grupo.",
+    title: "Pesquise cartas",
+    text: "Encontre cartas por nome ou codigo e consulte detalhes direto do catalogo.",
     icon: Search
   },
   {
@@ -16,8 +16,8 @@ const features = [
     icon: ShieldCheck
   },
   {
-    title: "Converse com colegas",
-    text: "Use a comunidade para comentar estrategias, cartas, trocas e ajustes de listas.",
+    title: "Negocie com a tripulacao",
+    text: "Publique trocas e vendas para todos ou direcione a oferta para uma pessoa.",
     icon: MessageSquareText
   }
 ];
@@ -33,8 +33,8 @@ export default function HomePage() {
               Bastardos do One Piece
             </h1>
             <p className="max-w-2xl text-lg text-muted-foreground">
-              Um porto seguro para sua tripulacao pesquisar cartas, montar decks, controlar colecao,
-              combinar trocas e conversar sobre TCG como quem divide um mapa do tesouro.
+              Um porto seguro para sua tripulacao pesquisar cartas, montar decks, combinar trocas
+              e conversar sobre TCG como quem divide um mapa do tesouro.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
@@ -49,7 +49,7 @@ export default function HomePage() {
             </Button>
           </div>
           <div className="grid max-w-2xl gap-3 sm:grid-cols-3">
-            {["Colecao protegida", "Decks por usuario", "Chat da tripulacao"].map((item) => (
+            {["Cartas pesquisaveis", "Decks por usuario", "Chat da tripulacao"].map((item) => (
               <div key={item} className="pirate-parchment rounded-md px-3 py-2 text-sm font-bold text-amber-100">
                 {item}
               </div>

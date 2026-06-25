@@ -14,69 +14,17 @@ import {
 import { firestore } from "@/lib/firebase";
 import type {
   UserDeck,
-  UserOwnedCard,
   UserWishlistCard
 } from "@/types/onePieceCard";
 
 const USERS_COLLECTION = "users";
 
-function userSubcollection(uid: string, subcollection: "collection" | "decks" | "wishlist") {
+function userSubcollection(uid: string, subcollection: "decks" | "wishlist") {
   return collection(firestore, USERS_COLLECTION, uid, subcollection);
 }
 
 function nullableDate(value: unknown): Date | undefined {
   return value instanceof Timestamp ? value.toDate() : undefined;
-}
-
-export async function saveUserOwnedCard(uid: string, card: UserOwnedCard): Promise<void> {
-  await setDoc(
-    doc(userSubcollection(uid, "collection"), card.id),
-    {
-      userId: uid,
-      nome: card.name,
-      codigo: card.code,
-      imagem: card.imageUrl ?? "",
-      quantidade: card.quantity,
-      tipo: card.type ?? "",
-      cor: card.color ?? "",
-      raridade: card.rarity ?? "",
-      observacoes: card.notes ?? "",
-      atualizadoEm: serverTimestamp()
-    },
-    { merge: true }
-  );
-}
-
-export function subscribeUserOwnedCards(
-  uid: string,
-  onChange: (cards: UserOwnedCard[]) => void,
-  onError?: (error: Error) => void
-) {
-  return onSnapshot(
-    query(userSubcollection(uid, "collection"), where("userId", "==", uid)),
-    (snapshot) => {
-      onChange(
-        snapshot.docs
-          .map((document) => {
-            const data = document.data();
-
-            return {
-              id: document.id,
-              name: data.nome ?? "Carta sem nome",
-              code: data.codigo ?? document.id,
-              imageUrl: data.imagem || undefined,
-              quantity: data.quantidade ?? 0,
-              type: data.tipo || undefined,
-              color: data.cor || undefined,
-              rarity: data.raridade || undefined,
-              notes: data.observacoes || undefined
-            };
-          })
-          .sort((a, b) => a.name.localeCompare(b.name))
-      );
-    },
-    onError
-  );
 }
 
 export async function saveUserWishlistCard(uid: string, card: UserWishlistCard): Promise<void> {

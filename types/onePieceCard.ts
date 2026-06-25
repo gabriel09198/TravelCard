@@ -58,18 +58,6 @@ export interface UserDeck {
   updatedAt?: Date;
 }
 
-export interface UserOwnedCard {
-  id: string;
-  name: string;
-  code: string;
-  imageUrl?: string;
-  quantity: number;
-  type?: string;
-  color?: string;
-  rarity?: string;
-  notes?: string;
-}
-
 export interface UserWishlistCard {
   id: string;
   name: string;

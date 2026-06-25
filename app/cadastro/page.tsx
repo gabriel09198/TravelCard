@@ -12,14 +12,14 @@ export default function RegisterPage() {
         </div>
         <h1 className="text-4xl font-bold leading-tight">Sua tripulacao, seus decks, suas cartas.</h1>
         <p className="max-w-xl text-lg text-muted-foreground">
-          Crie uma conta para salvar colecao, desejos, solicitacoes e conversas no Firebase.
+          Crie uma conta para salvar decks, desejos, solicitacoes e conversas no Firebase.
         </p>
       </div>
       <Card className="w-full overflow-hidden border-2 shadow-xl">
         <CardHeader>
           <CardTitle>Criar conta</CardTitle>
           <p className="text-sm text-muted-foreground">
-            Crie seu perfil para cadastrar decks, colecao e lista de desejos.
+            Crie seu perfil para cadastrar decks e sua lista de desejos.
           </p>
         </CardHeader>
         <CardContent>

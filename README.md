@@ -1,6 +1,6 @@
 # OPCG Club
 
-Plataforma web para um grupo de jogadores de One Piece Card Game organizar decks, colecao, lista de desejos, trocas e conversas.
+Plataforma web para um grupo de jogadores de One Piece Card Game organizar decks, lista de desejos, trocas e conversas.
 
 ## Stack
 
@@ -40,5 +40,4 @@ npx prisma migrate dev
 
 1. Substituir os exemplos restantes de `lib/mock-data.ts` por dados reais.
 2. Criar formularios com validacao para cartas e posts.
-3. Implementar os filtros ainda visuais da colecao.
-4. Adicionar permissoes para perfil privado/publico.
+3. Adicionar permissoes para perfil privado/publico.

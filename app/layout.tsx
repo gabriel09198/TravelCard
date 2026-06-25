@@ -14,7 +14,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Bastardos do One Piece",
-  description: "Plataforma para decks, colecao e trocas de One Piece Card Game."
+  description: "Plataforma para cartas, decks e trocas de One Piece Card Game."
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

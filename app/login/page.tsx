@@ -13,7 +13,7 @@ export default function LoginPage() {
         </div>
         <h1 className="text-4xl font-bold leading-tight">Bastardos do One Piece</h1>
         <p className="max-w-xl text-lg text-muted-foreground">
-          Entre para organizar sua colecao, montar decks e combinar trocas com a tripulacao.
+          Entre para pesquisar cartas, montar decks e combinar trocas com a tripulacao.
         </p>
       </div>
       <Card className="w-full overflow-hidden border-2 shadow-xl">

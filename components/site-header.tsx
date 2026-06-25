@@ -12,10 +12,8 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/cartas", label: "Cartas" },
   { href: "/decks", label: "Decks" },
-  { href: "/colecao", label: "Colecao" },
   { href: "/desejos", label: "Desejos" },
   { href: "/solicitacoes", label: "Solicitacoes" },
-  { href: "/colegas", label: "Colegas" },
   { href: "/comunidade", label: "Comunidade" }
 ];
 

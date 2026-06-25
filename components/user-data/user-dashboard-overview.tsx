@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { BookOpenCheck, Layers, MessageSquareText, ShoppingBag } from "lucide-react";
+import { Layers, MessageSquareText, ShoppingBag } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { useAuth } from "@/components/auth/auth-provider";
@@ -9,10 +9,9 @@ import { StatCard } from "@/components/stat-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   subscribeUserDecks,
-  subscribeUserOwnedCards,
   subscribeUserWishlist
 } from "@/services/firebaseUserDataService";
-import type { UserDeck, UserOwnedCard, UserWishlistCard } from "@/types/onePieceCard";
+import type { UserDeck, UserWishlistCard } from "@/types/onePieceCard";
 
 function RecentUserDeck({ deck }: { deck: UserDeck }) {
   const totalCards = deck.cards.reduce((sum, card) => sum + card.quantity, 0);
@@ -59,14 +58,12 @@ function RecentUserDeck({ deck }: { deck: UserDeck }) {
 export function UserDashboardOverview() {
   const { user, profile } = useAuth();
   const [decks, setDecks] = useState<UserDeck[]>([]);
-  const [ownedCards, setOwnedCards] = useState<UserOwnedCard[]>([]);
   const [wishlist, setWishlist] = useState<UserWishlistCard[]>([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (!user) {
       setDecks([]);
-      setOwnedCards([]);
       setWishlist([]);
       setError("");
       return undefined;
@@ -74,9 +71,6 @@ export function UserDashboardOverview() {
 
     const unsubscribers = [
       subscribeUserDecks(user.uid, setDecks, () => setError("Nao foi possivel carregar seus decks.")),
-      subscribeUserOwnedCards(user.uid, setOwnedCards, () =>
-        setError("Nao foi possivel carregar sua colecao.")
-      ),
       subscribeUserWishlist(user.uid, setWishlist, () =>
         setError("Nao foi possivel carregar sua lista de desejos.")
       )
@@ -87,10 +81,6 @@ export function UserDashboardOverview() {
     };
   }, [user]);
 
-  const ownedTotal = useMemo(
-    () => ownedCards.reduce((sum, card) => sum + card.quantity, 0),
-    [ownedCards]
-  );
   const wishlistTotal = useMemo(
     () => wishlist.reduce((sum, card) => sum + card.desiredQuantity, 0),
     [wishlist]
@@ -104,20 +94,14 @@ export function UserDashboardOverview() {
           Oi, {profile?.name ?? user?.displayName ?? "tripulante"}
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-          Seu convés pessoal: decks, coleção e desejos carregados somente da sua conta.
+          Seu convés pessoal: decks e desejos carregados somente da sua conta.
         </p>
       </div>
 
       {error ? <p className="rounded-md bg-red-500/15 p-3 text-sm text-red-200">{error}</p> : null}
 
-      <section className="grid gap-4 md:grid-cols-3">
+      <section className="grid gap-4 md:grid-cols-2">
         <StatCard label="Decks" value={decks.length} helper="Listas da sua conta" icon={Layers} />
-        <StatCard
-          label="Cartas possuidas"
-          value={ownedTotal}
-          helper="Na sua colecao"
-          icon={BookOpenCheck}
-        />
         <StatCard
           label="Desejadas"
           value={wishlistTotal}
