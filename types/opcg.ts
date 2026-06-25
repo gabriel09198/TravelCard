@@ -22,32 +22,6 @@ export interface Card {
   quantity: number;
 }
 
-export interface DeckCard {
-  cardId: string;
-  quantity: number;
-}
-
-export interface Deck {
-  id: string;
-  name: string;
-  leader: string;
-  colors: CardColor[];
-  format: "Casual" | "Local" | "Tournament";
-  owner: string;
-  updatedAt: string;
-  cards: DeckCard[];
-}
-
-export interface UserProfile {
-  id: string;
-  name: string;
-  handle: string;
-  favoriteColor: CardColor;
-  decks: number;
-  ownedCards: number;
-  wantedCards: number;
-}
-
 export interface CommunityPost {
   id: string;
   author: string;

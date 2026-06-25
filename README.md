@@ -8,8 +8,8 @@ Plataforma web para um grupo de jogadores de One Piece Card Game organizar decks
 - TypeScript
 - Tailwind CSS
 - Componentes no estilo shadcn UI
-- Prisma com PostgreSQL
-- NextAuth planejado para autenticacao
+- Firebase Authentication e Cloud Firestore
+- Prisma com PostgreSQL mantido como modelo legado para avaliacao
 
 ## Como rodar
 
@@ -20,7 +20,8 @@ npm run dev
 
 Depois abra `http://localhost:3000`.
 
-Para usar banco real, copie `.env.example` para `.env`, configure `DATABASE_URL` e rode:
+O sistema atual usa Firebase. O schema Prisma legado foi mantido por seguranca e deve ser
+revisado antes de ser removido. Para utiliza-lo, configure `DATABASE_URL` e rode:
 
 ```bash
 npx prisma generate
@@ -33,12 +34,11 @@ npx prisma migrate dev
 - `components/`: componentes reutilizaveis de UI e dominio.
 - `lib/`: helpers e dados mockados da primeira versao.
 - `types/`: tipos TypeScript do dominio.
-- `prisma/`: modelo inicial do banco.
+- `prisma/`: modelo legado de banco, mantido para revisao manual.
 
 ## Proximas etapas
 
-1. Conectar cadastro e login com NextAuth.
-2. Trocar os mocks em `lib/mock-data.ts` por consultas no Prisma.
-3. Criar formularios com validacao para decks, cartas e posts.
-4. Implementar filtros reais com estado na URL.
-5. Adicionar permissoes para perfil privado/publico.
+1. Substituir os exemplos restantes de `lib/mock-data.ts` por dados reais.
+2. Criar formularios com validacao para cartas e posts.
+3. Implementar os filtros ainda visuais da colecao.
+4. Adicionar permissoes para perfil privado/publico.

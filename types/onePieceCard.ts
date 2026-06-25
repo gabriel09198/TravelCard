@@ -1,5 +1,3 @@
-export type OnePieceCardStatus = "tenho" | "quero_comprar";
-
 export interface OnePieceCardApiCard {
   inventory_price?: number | null;
   market_price?: number | null;
@@ -38,20 +36,6 @@ export interface OnePieceCard {
   counter: number | null;
   attribute: string | null;
   marketPrice: number | null;
-}
-
-export interface UserCardCollection {
-  userId: string;
-  cardId: string;
-  cardNumber: string;
-  name?: string;
-  imageUrl?: string;
-  quantity: number;
-  status: OnePieceCardStatus;
-  type?: string;
-  color?: string;
-  rarity?: string;
-  notes?: string;
 }
 
 export interface UserDeckCard {
